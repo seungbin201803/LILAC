@@ -45,6 +45,8 @@ class loader2D(Dataset):
             assert set(['fname', 'subject', args.targetname]).issubset(
                 set(list(self.demo.columns))), f"Check input csv file column names"
 
+        assert len(self.demo) != 0, f"Input csv file is empty"
+
         # image directory
         IDunq = np.unique(self.demo['subject'])
         index_combination = np.empty((0, 2))
@@ -114,6 +116,9 @@ class loader3D(Dataset):
             self.augmentation = False
             assert set(['fname', 'subject', args.targetname]).issubset(
                 set(list(self.demo.columns))), f"Check input csv file column names"
+
+        assert len(self.demo) != 0, f"Input csv file is empty"
+
 
         self.jobname = args.jobname
         # Filter NaN values

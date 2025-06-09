@@ -1,0 +1,6 @@
+/var/spool/slurm/slurmd/job480719/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torchio/data/image.py:248: UserWarning: Using TorchIO images without a torchio.SubjectsLoader in PyTorch >= 2.3 might have unexpected consequences, e.g., the collated batches will be instances of torchio.Subject with 5D images. Replace your PyTorch DataLoader with a torchio.SubjectsLoader so that the collated batch becomes a dictionary, as expected. See https://github.com/TorchIO-project/torchio/issues/1179 for more context about this issue.
+  warnings.warn(message, stacklevel=1)
+/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torchio/transforms/transform.py:162: RuntimeWarning: Output shape (144, 145, 144) != target shape (np.int64(144), np.int64(144), np.int64(144)). Fixing with CropOrPad
+  transformed = self.apply_transform(subject)
+slurmstepd: error: *** JOB 480719 ON ai-gpu03 CANCELLED AT 2025-05-30T20:12:26 ***
