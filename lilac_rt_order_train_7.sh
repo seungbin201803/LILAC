@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#SBATCH --job-name=lilac_rt_order_5 # give your job a name
+#SBATCH --job-name=lilac_rt_order_7 # give your job a name
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=12
 ##SBATCH --time=48:00:00 # set this time according to your need
 #SBATCH --mem=64GB # how much RAM will your notebook consume? 
 #SBATCH --gres=gpu:1 # if you need to use a GPU
@@ -20,7 +20,7 @@ source ./venv/bin/activate
 source activate lilac
 # Or if in your home dir: source ~/myvenv/bin/activate
 python3 ./run.py \
-    --jobname='lilac_rt_order_5' \
+    --jobname='lilac_rt_order_7' \
     --task_option='o' \
     --targetname='timepoint' \
     --backbone_name='cnn_3D' \
@@ -32,24 +32,9 @@ python3 ./run.py \
     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
+    --inter_num_ch=48
     
-# 498325
+# 499049
+# inter_num_ch=48
 # RT_easy_crop128_1_20250608
-
-# # eval
-python3 ./run.py \
-    --jobname='lilac_rt_order_5' \
-    --task_option='o' \
-    --targetname='timepoint' \
-    --backbone_name='cnn_3D' \
-    --batchsize=8 \
-    --max_epoch=100 \
-    --output_directory='./output' \
-    --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_128' \
-    --image_size='128,128,128' \
-    --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
-    --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
-    --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-    --run_mode='eval'
-# 498353
-# I ran train again by mistake
+# cpus-per-task=12, batchsize=8
