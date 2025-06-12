@@ -158,11 +158,11 @@ def get_backbone(args=None):
 
     backbone_name = args.backbone_name
     if backbone_name == 'cnn_3D':
-        backbone = CNNbasic3D(inputsize=args.image_size, channels=args.image_channel, additional_feature = n_of_meta)
+        backbone = CNNbasic3D(inputsize=args.image_size, channels=args.image_channel, additional_feature = n_of_meta, initial_channel=args.inter_num_ch, n_of_blocks=args.num_block)
         linear = backbone.linear
         backbone.linear = nn.Identity()
     elif backbone_name == 'cnn_2D':
-        backbone = CNNbasic2D(inputsize=args.image_size, channels=args.image_channel, additional_feature = n_of_meta)
+        backbone = CNNbasic2D(inputsize=args.image_size, channels=args.image_channel, additional_feature = n_of_meta, initial_channel=args.inter_num_ch, n_of_blocks=args.num_block)
         linear = backbone.linear
         backbone.linear = nn.Identity()
     elif backbone_name == 'resnet50_2D':
@@ -171,7 +171,6 @@ def get_backbone(args=None):
             backbone.conv1 = nn.Conv2d(args.image_channel, 64, 7, 2, 3, bias=False)
         linear = nn.Linear(2048 + n_of_meta, 1, bias=False)
         backbone.fc = nn.Identity()
-
     elif backbone_name == 'resnet18_2D':
         backbone = resnet18()
         if args.image_channel != 3:

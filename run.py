@@ -383,6 +383,9 @@ def parse_args():
     parser.add_argument('--run_mode', default='train', choices=['train', 'eval'], help="select mode")  # required=True,
     parser.add_argument('--pretrained_weight', default=False, action='store_true')
 
+    parser.add_argument('--inter_num_ch', default=16, type=int, help='Number of output channels from CNN')
+    parser.add_argument('--num_block', default=4, type=int, help='Number of CNN blocks')
+
     args = parser.parse_args()
 
     return args

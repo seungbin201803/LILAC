@@ -2,3 +2,4 @@ run/
 output/
 __pycache__/
 lilac.egg-info/
+model_weights/
