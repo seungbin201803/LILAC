@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name=lilac_rt_order_10 # give your job a name
+#SBATCH --job-name=lilac_rt_order_15 # give your job a name
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
 ##SBATCH --time=48:00:00 # set this time according to your need
@@ -20,7 +20,7 @@ source ./venv/bin/activate
 source activate lilac
 # Or if in your home dir: source ~/myvenv/bin/activate
 # python3 ./run.py \
-#     --jobname='lilac_rt_order_10' \
+#     --jobname='lilac_rt_order_15' \
 #     --task_option='o' \
 #     --targetname='timepoint' \
 #     --backbone_name='cnn_3D' \
@@ -31,36 +31,22 @@ source activate lilac
 #     --image_size='80,80,80' \
 #     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
 #     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
-#     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-#--inter_num_ch=16 \
-#--num_block=6
-    
-# 499173
+#     --exclude_sametarget
+    # --csv_file_train='./RT_easy_crop128_trainval_train.csv' \
+    # --csv_file_val='./RT_easy_crop128_trainval_val.csv' \
+    #--csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
+    #--lr=0.01 \
+    #--earlystopping=30
+    #--num_block=6 
+    #--inter_num_ch=32 \
+
+# 499745
+# exclude_sametarget
 # image_crop_80, image_size='80,80,80'
 # RT_easy_crop128_1_20250608
-# cpus-per-task=12, batchsize=8
 
-
-# ### test
-# python3 ./run.py \
-#     --jobname='lilac_rt_order_10' \
-#     --task_option='o' \
-#     --targetname='timepoint' \
-#     --backbone_name='cnn_3D' \
-#     --batchsize=8 \
-#     --max_epoch=100 \
-#     --output_directory='./output' \
-#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_80' \
-#     --image_size='80,80,80' \
-#     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
-#     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
-#     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-#     --run_mode='eval'
-# # 499365
-
-### gradcam
 python3 ./run.py \
-    --jobname='lilac_rt_order_10' \
+    --jobname='lilac_rt_order_15' \
     --task_option='o' \
     --targetname='timepoint' \
     --backbone_name='cnn_3D' \
@@ -72,11 +58,7 @@ python3 ./run.py \
     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-    --run_mode='eval' \
-    --gradcam
-# 500247
-# 500252
-# 500254
-# 500255
-# 500265
-# 500266
+    --exclude_sametarget \
+    --run_mode='eval'
+
+# 500048

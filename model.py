@@ -187,13 +187,21 @@ class LILAC(nn.Module):
         super().__init__()
         self.backbone, self.linear = get_backbone(args)
         self.optional_meta = len(args.optional_meta)>0
-    def forward(self, x1, x2, meta = None):
-        f = self.backbone(x1) - self.backbone(x2)
+    def forward(self, x1, x2, meta = None, return_f=False):
+        f1 = self.backbone(x1)
+        f2 = self.backbone(x2)
+        f = f1 - f2
         if not self.optional_meta:
-            return self.linear(f)
+            if return_f:
+                return self.linear(f), f1, f2
+            else:
+                return self.linear(f)
         else:
             m1, m2 = meta
             m = m1 - m2
             f = torch.concat((f, m), 1)
-            return self.linear(f)
+            if return_f:
+                return self.linear(f), f1, f2
+            else:
+                return self.linear(f)
 

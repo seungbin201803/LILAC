@@ -134,6 +134,13 @@ class loader3D(Dataset):
             ### all possible pairs
             tmp_combination = np.array(
                 np.meshgrid(np.array(range(len(indices))), np.array(range(len(indices))))).T.reshape(-1, 2)
+
+            if args.exclude_sametarget:
+                tmp_combination_fix = []
+                for c in tmp_combination:
+                    if c[0]!=c[1]: tmp_combination_fix.append(c)
+                tmp_combination = tmp_combination_fix
+            
             index_combination = np.append(index_combination, indices[tmp_combination], 0)
 
         self.image_size = args.image_size
@@ -216,5 +223,6 @@ class loader3D(Dataset):
 
     def __len__(self):
         return len(self.index_combination)
+    
 
 

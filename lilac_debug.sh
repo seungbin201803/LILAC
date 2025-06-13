@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name=lilac_rt_order_14 # give your job a name
+#SBATCH --job-name=lilac_debug # give your job a name
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
 ##SBATCH --time=48:00:00 # set this time according to your need
@@ -19,30 +19,8 @@ module load anaconda3
 source ./venv/bin/activate
 source activate lilac
 # Or if in your home dir: source ~/myvenv/bin/activate
-# python3 ./run.py \
-#     --jobname='lilac_rt_order_14' \
-#     --task_option='o' \
-#     --targetname='timepoint' \
-#     --backbone_name='cnn_3D' \
-#     --batchsize=8 \
-#     --max_epoch=100 \
-#     --output_directory='./output' \
-#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_80' \
-#     --image_size='80,80,80' \
-#     --csv_file_train='./RT_easy_crop128_trainval_train.csv' \
-#     --csv_file_val='./RT_easy_crop128_trainval_val.csv' \
-#     #--csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-#     #--lr=0.01 \
-#     #--earlystopping=30
-#     #--num_block=6 
-#     #--inter_num_ch=32 \
-
-# 499362
-# image_crop_80, image_size='80,80,80'
-# RT_easy_crop128_trainval
-
 python3 ./run.py \
-    --jobname='lilac_rt_order_14' \
+    --jobname='lilac_debug' \
     --task_option='o' \
     --targetname='timepoint' \
     --backbone_name='cnn_3D' \
@@ -53,6 +31,16 @@ python3 ./run.py \
     --image_size='80,80,80' \
     --csv_file_train='./RT_easy_crop128_trainval_train.csv' \
     --csv_file_val='./RT_easy_crop128_trainval_val.csv' \
-    --csv_file_test='./RT_easy_crop128_trainval_val.csv' \
-    --run_mode='eval'
-# 500115
+    --lrscheduler 20 0.5
+    # --exclude_sametarget
+    #--csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
+    #--lr=0.01 \
+    #--earlystopping=30
+    #--num_block=6 
+    #--inter_num_ch=32 \
+
+# 499376
+# 499377
+# 499378
+# 499379
+# 499380

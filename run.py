@@ -1,17 +1,20 @@
 import sys
-from torch.utils.tensorboard import SummaryWriter
 import argparse
 import glob
 from loader import *
 from model import *
 from utils import *
-import torch
 import numpy as np
 import os
 import time
 import datetime
-import torch.nn as nn
 import pandas as pd
+import matplotlib.pyplot as plt
+
+import torch
+import torch.nn as nn
+from torch.utils.tensorboard import SummaryWriter
+import torch.optim.lr_scheduler as lr_scheduler
 
 
 def train(network, opt):
@@ -59,6 +62,9 @@ def train(network, opt):
             opt.epoch = int(bestepoch)
 
     optimizer = torch.optim.Adam(network.parameters(), lr=opt.lr, betas=(0.9, 0.999))
+    if opt.lrscheduler is not None: 
+        scheduler = lr_scheduler.StepLR(optimizer, step_size=opt.lrscheduler[0], gamma=opt.lrscheduler[1])
+        print('lr_scheduler.StepLR is set: ', opt.lrscheduler)
     steps_per_epoch = opt.save_epoch_num
     writer = SummaryWriter(log_dir=f"{opt.output_fullname}")
     prev_time = time.time()
@@ -109,7 +115,7 @@ def train(network, opt):
             loss.backward()
             optimizer.step()
             epoch_total_loss.append(loss.item())
-
+            
             # Log Progress
             batches_done = epoch * len(loader_train) + step
             batches_left = opt.max_epoch * len(loader_train) - batches_done
@@ -129,6 +135,11 @@ def train(network, opt):
                 )
             )
             epoch_step_time.append(time.time() - step_start_time)
+
+        if opt.lrscheduler is not None: 
+            prev_lr = scheduler.get_last_lr()
+            scheduler.step()
+            print('\nLr is updated by lr_scheduler.StepLR. {}->{}'.format(prev_lr, scheduler.get_last_lr()))
 
         if ((epoch + 1) % steps_per_epoch == 0):  # (step != 0) &
             # print epoch info
@@ -343,6 +354,15 @@ def test(network,opt, overwrite = False):
                 else:
                     print(f'{dtm.upper()}: {dict_metric[dtm](target_diff, feature_diff)}:.3f')
 
+    if opt.gradcam:
+        dir_cam = os.path.join(opt.output_fullname, 'gradcam')
+        # if os.path.isdir(dir_cam):
+        #     print('dir_cam exists.')
+        #     exit()
+        if os.path.isdir(dir_cam) is False:
+            os.mkdir(dir_cam)
+        visualize_gradcam_pair(network, opt, args.test_loader, dir_cam)
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -385,6 +405,9 @@ def parse_args():
 
     parser.add_argument('--inter_num_ch', default=16, type=int, help='Number of output channels from CNN')
     parser.add_argument('--num_block', default=4, type=int, help='Number of CNN blocks')
+    parser.add_argument('--exclude_sametarget', default=False, action='store_true', help='Exclude same target combinatinos (target=0.5) in o task')
+    parser.add_argument('--lrscheduler', default=None, type=float, nargs=2, help='StepLR. Input: step_size gamma')
+    parser.add_argument('--gradcam', default=False, action='store_true')
 
     args = parser.parse_args()
 
@@ -392,6 +415,10 @@ def parse_args():
 
 
 def run_setup(args):
+    if args.gradcam and args.run_mode=='train':
+        print('args.gradcam and args.run_mode==train')
+        exit()
+
     dict_loss = {'o': nn.BCEWithLogitsLoss(), 't': nn.MSELoss(), 's': nn.MSELoss()}
     dict_task = {'o': 'temporal_ordering', 't': 'regression', 's': 'regression'}
 
@@ -464,6 +491,392 @@ def run_setup(args):
     print(f'BACKBONE: {args.backbone_name}')
     print(f'RUN MODE: {args.run_mode}')
     print(f"Num of GPUs: {torch.cuda.device_count()}")
+
+def visualize_gradcam_pair(network, opt, loader, dir_cam, visualization=False):
+    '''
+    https://github.com/heejong-kim/learning-to-compare-longitudinal-images-3d/blob/978e7ae07acf3eb6299b50f3f6b18a5b89b7c3eb/train-aging.py#L1419
+    '''
+    if visualization: fname_cam_summary = os.path.join(dir_cam, 'gradcam-summary_visualization.txt')
+    else: fname_cam_summary = os.path.join(dir_cam, 'gradcam-summary.txt')
+
+    import torchio as tio
+    def write_imgs_iterate(img_dict, save_dir, save_name, num_rows, num_cols):
+        os.makedirs(save_dir, exist_ok=True)
+
+        # num_rows = 3
+        # num_cols = 4
+        f = plt.figure(figsize=(20, 16))
+        plt.subplot(num_rows, num_cols, 1)
+        # plt.imshow(t)
+        # plt.title('ground truth')
+        # plt.axis('off')
+
+        i = 1
+        for item in img_dict:
+            plt.subplot(num_rows, num_cols, i)
+            plt.imshow(item["image"])
+            plt.title(item["title"])
+            plt.axis('off')
+            i += 1
+
+        plt.savefig(os.path.join(save_dir, save_name))
+
+        plt.clf()
+        plt.close('all')
+
+    def tensor_hook(grad):
+        grads['gradient']['difference'] = (grad[0].cpu().detach())
+        # print(f'backward hook: {grad.size()}')
+
+    def tensor_hook_input1(grad):
+        grads['gradient']['activation1'] = (grad[0].cpu().detach())
+        # print(f'backward hook1: {grad.size()}')
+
+    def tensor_hook_input2(grad):
+        grads['gradient']['activation2'] = (grad[0].cpu().detach())
+        # print(f'backward hook2: {grad.size()}')
+
+    def blend(image, heatmap, use_mask, x, y, z):
+        t = np.clip(image, 0, 1)
+
+        heatmap -= np.min(heatmap)
+
+        if heatmap.max() != torch.tensor(0.):
+            heatmap /= heatmap.max()
+
+        ## 3d into 2ds
+        image2d = np.concatenate((image[x, :, :].squeeze(), image[:, y, :].squeeze(), image[:, :, z].squeeze()), 1)
+        heatmap2d = np.concatenate((heatmap[x, :, :].squeeze(), heatmap[:, y, :].squeeze(), heatmap[:, :, z].squeeze()), 1)
+
+        def blend_image_and_heatmap(img_cv, heatmap, use_mask=False, image_weight=0.5):
+            blended_img_mask = None
+            image_size = img_cv.shape
+            if use_mask:
+                score = cv2.resize(heatmap, (img_cv.shape[1], img_cv.shape[0]))
+                heatmap_cv = np.uint8(score)
+                blended_img_mask = np.uint8((np.repeat(score.reshape(image_size), 3, axis=2) * img_cv))
+
+            heatmap = np.max(heatmap) - heatmap
+            if np.max(heatmap) < 255.:
+                heatmap *= 255
+
+            score = cv2.resize(heatmap, (img_cv.shape[1], img_cv.shape[0]))
+            heatmap_cv = np.uint8(score)
+            heatmap_cv = cv2.applyColorMap(heatmap_cv, cv2.COLORMAP_JET)
+
+            blended_img = heatmap_cv * image_weight + img_cv
+            blended_img = cv2.normalize(blended_img.astype('float'), None, 0.0, 1.0, cv2.NORM_MINMAX)
+            blended_img[blended_img < 0] = 0
+
+            return blended_img, score, heatmap_cv, blended_img_mask, img_cv
+
+        im, score, heatmap_cv, blended_img_mask, img_cv = blend_image_and_heatmap(image2d[:, :, None], heatmap2d, use_mask=use_mask)
+        # blended_img, score, heatmap_cv, blended_img_mask, img_cv
+        return minmax(image2d), im, heatmap_cv, blended_img_mask, image, score, heatmap
+
+    def handle_image_saving(img_dict, orig_im, blended_im, blended_img_mask, label, operation, save_image=False,
+                            save_mask=False):
+        im_to_save = blended_im
+        if save_mask:
+            im_to_save = blended_img_mask
+
+        im_to_save = np.concatenate((orig_im, im_to_save), 1)
+
+        if save_image:
+            title = f'label: {label}'
+            img_dict.append({"image": im_to_save, "title": title})
+
+    def blend_concat(im1, im2, hm1, hm2, x, y, z):
+
+        t1, blended_im1, heatmap_cv, blended_img_mask1, image, score, heatmap = blend(im1.squeeze(), hm1,
+                                                                                      True, x, y, z)
+        t2, blended_im2, heatmap_cv, blended_img_mask2, image, score, heatmap = blend(im2.squeeze(), hm2,
+                                                                                      True, x, y, z)
+        orig_pair = np.repeat(np.concatenate((t1, t2))[:, :, None], 3, 2)
+        blended_im_concat = np.concatenate((blended_im1, blended_im2))
+        blended_img_mask_concat = np.concatenate((blended_img_mask1, blended_img_mask2))
+        return orig_pair, blended_im_concat, blended_img_mask_concat
+
+    def get_all_maps(activation, gradient):
+
+        resize = tio.transforms.Resize(tuple(im1.shape))
+
+        ## Activation map
+        AM = resize((activation).sum(0).squeeze()[None, :])
+
+        ## gradCAM elementwise (attention map * gradient)
+        gradcam_activation_elementwise = (activation * gradient).sum(0)
+        gradCAMelement = gradcam_activation_elementwise
+        gradCAMelement[gradCAMelement < 0] = 0
+        gradCAMelement = resize(gradCAMelement.squeeze()[None,:])
+
+        # gradCAM avgpool (attention map * avgpool(gradient)) = original gradcam
+        pooled_grads = gradient.sum(axis=tuple([1, 2, 3]))
+        gradcam_activation = activation
+        for i in range(len(pooled_grads)):
+            gradcam_activation[i, :, :] *= pooled_grads[i]
+
+        gradCAM = gradcam_activation.sum(0)
+        gradCAM[gradCAM < 0] = 0
+        gradCAM = resize(gradCAM.squeeze()[None, :])
+
+        return AM.squeeze(), gradCAMelement.squeeze(), gradCAM.squeeze()
+
+    import cv2
+
+    savedmodelname = f"{opt.output_fullname}/model_best.pth"
+    opt.batchsize = 1
+    cuda = True
+    parallel = True
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
+
+    ### Same as test()
+    if parallel:
+        network = nn.DataParallel(network).to(device)
+        if opt.pretrained_weight:
+            print("Model is using pretrained weights from the paper")
+            pretrained_filename = opt.output_fullname.split('/')[-1] + '.pth'
+            pretrained_dir = './model_weights'
+            pretrained_path = os.path.join(pretrained_dir, pretrained_filename)
+            print(pretrained_path)
+            assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check.\n" \
+                                                "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
+            network.load_state_dict(torch.load(pretrained_path))
+        else:
+            network.load_state_dict(torch.load(savedmodelname))
+    else:
+        if opt.pretrained_weight:
+            print("Model is using pretrained weights from the paper")
+            pretrained_filename = opt.output_fullname.split('/')[-1] + '.pth'
+            pretrained_dir = './model_weights'
+            pretrained_path = os.path.join(pretrained_dir, pretrained_filename)
+            assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check.\n" \
+                                                "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
+            state_dict = torch.load(pretrained_path)
+            # remap to handle w/o DataParallel:  a new state_dict by removing 'module.' prefix
+            new_state_dict = {}
+            for key in state_dict.keys():
+                if key.startswith("module."):
+                    new_key = key.replace('module.', '')  # Remove 'module.' from the keys
+
+                new_state_dict[new_key] = state_dict[key]
+
+            # Load the updated state_dict into your model
+            network.load_state_dict(new_state_dict)
+        else:
+            network.load_state_dict(torch.load(savedmodelname))
+
+        if cuda:
+            network = network.cuda()
+
+    resultname = f'prediction-testset'
+    result_pred = pd.read_csv(os.path.join(f'' + opt.output_fullname, f'{resultname}.csv'))
+
+    loader_test = torch.utils.data.DataLoader(
+            loader,
+            batch_size=opt.batchsize, shuffle=False, num_workers = 1)
+    # loader_test = torch.utils.data.DataLoader(
+    #         loader(root=opt.image_dir, trainvaltest='test', transform=False, opt=opt),
+    #         batch_size=opt.batchsize, shuffle=False, num_workers = 1)
+    # # from test()
+    # loader_test = torch.utils.data.DataLoader(args.test_loader,
+    #                                               batch_size=opt.batchsize, shuffle=False, num_workers=opt.num_workers)
+
+    network.eval()
+    network.zero_grad()
+
+    if not visualization:
+        # roi1_collect = []
+        # roi2_collect = []
+        diffcam_collect = []
+
+        for data_index in range(len(result_pred)):
+            sys.stdout.write(
+                "\r [index %d/%d] "
+                % (data_index,
+                   len(result_pred),
+                   )
+            )
+
+            network.eval()
+            network.zero_grad()
+            batch = loader_test.dataset.__getitem__(data_index)
+            # batchroi = loader_test_roi.__getitem__(data_index)
+
+            # get matched ROI map
+
+            grads = {'activation': [],
+                     'gradient': {}}  # an empty dictionary
+
+            if len(args.optional_meta) > 0:
+                I1, I2 = batch
+                input1, target1, meta1 = I1
+                input2, target2, meta2 = I2
+                # predicted, f1, f2 = network(input2.type(Tensor), input1.type(Tensor),
+                #                     meta = [meta2.type(Tensor), meta1.type(Tensor)], return_f=True)
+            else:
+                I1, I2 = batch
+                input1, target1 = I1
+                input2, target2 = I2
+                #predicted, f1, f2 = network(input2.type(Tensor), input1.type(Tensor), return_f=True)
+
+            #############################################################
+            ### Is it right?!
+            input1 = torch.tensor(input1)[None, :]
+            input2 = torch.tensor(input2)[None, :]
+
+            feature_tensor1 = -network.backbone(input1.type(Tensor).to(device))
+            feature_tensor2 = network.backbone(input2.type(Tensor).to(device))
+            feature_tensor = feature_tensor2 + feature_tensor1
+
+            activation_diff = feature_tensor.cpu().detach().squeeze().numpy()
+
+            handle_tensor = feature_tensor.register_hook(tensor_hook)
+            feature_tensor = torch.flatten(feature_tensor, 1)
+            predicted = network.linear(feature_tensor)
+           
+            predicted.backward()
+            handle_tensor.remove()
+
+            gradient_diff = grads['gradient']['difference'].squeeze().numpy()
+
+            # save elementwise gradcam:
+            gradcam_activation_elementwise = (activation_diff * gradient_diff).sum(0)
+            # roi_avg = calculate_roi_values(roi1, roi2, gradcam_activation_elementwise)
+            # roi1_collect.append(roi_avg[:, 0])
+            # roi2_collect.append(roi_avg[:, 1])
+            diffcam_collect.append(gradcam_activation_elementwise.flatten())
+            #############################################################
+
+        # np.savetxt(fname_roi1_summary, np.array(roi1_collect))
+        # np.savetxt(fname_roi2_summary, np.array(roi2_collect))
+        np.savetxt(fname_cam_summary, np.array(diffcam_collect))
+        print(fname_cam_summary)
+    else:
+        # subject-wise saving
+        subject_names = np.unique(result_pred.subject)
+        for subject_name in subject_names:
+            if not os.path.exists(os.path.join(dir_cam, f'{subject_name}-GCEdiff.png')):
+
+                print(f'{subject_name}')
+
+                # data_index = np.where(np.logical_and(result_pred.subject == subject_name,
+                #                                      result_pred['gt-target'] > 0))[0]
+                data_index = np.where(np.logical_and(result_pred.subject == subject_name,
+                                                     result_pred['target'] > 0))[0]
+
+                num_rows = int(np.ceil(np.sqrt(len(data_index))))
+                if num_rows == 0:
+                    print(len(data_index))
+                    num_rows = 1
+                    num_cols = 1
+                else:
+                    num_cols = int(np.ceil(len(data_index) / num_rows))
+
+
+                gradcamelement_diff_dict = []
+
+                for i in data_index:
+                    network.eval()
+                    network.zero_grad()
+                    batch = loader_test.dataset.__getitem__(i)
+
+                    # get matched ROI map
+
+                    grads = {'activation':[],
+                             'gradient':{}}  # an empty dictionary
+
+                    if len(args.optional_meta) > 0:
+                        I1, I2 = batch
+                        input1, target1, meta1 = I1
+                        input2, target2, meta2 = I2
+                        # predicted = network(input2.type(Tensor), input1.type(Tensor),
+                        #                     meta = [meta2.type(Tensor), meta1.type(Tensor)])
+                    else:
+                        I1, I2 = batch
+                        input1, target1 = I1
+                        input2, target2 = I2
+                        #predicted = network(input2.type(Tensor), input1.type(Tensor))
+
+                    #############################################################
+                    ### Is it right?!
+                    input1 = torch.tensor(input1)[None, :]
+                    input2 = torch.tensor(input2)[None, :]
+
+                    feature_tensor1 = -network.backbone(input1.type(Tensor).to(device))
+                    feature_tensor2 = network.backbone(input2.type(Tensor).to(device))
+                    feature_tensor = feature_tensor2 + feature_tensor1
+
+                    activation_diff = feature_tensor.cpu().detach().squeeze().numpy()
+                    activation1 = feature_tensor1.cpu().detach().squeeze().numpy()
+                    activation2 = feature_tensor2.cpu().detach().squeeze().numpy()
+
+                    handle_tensor = feature_tensor.register_hook(tensor_hook)
+                    handle_tensor1 = feature_tensor1.register_hook(tensor_hook_input1)
+                    handle_tensor2 = feature_tensor2.register_hook(tensor_hook_input2)
+
+                    feature_tensor = torch.flatten(feature_tensor, 1)
+
+                    predicted = network.linear(feature_tensor)
+
+                    predicted.backward()
+                    handle_tensor.remove()
+                    handle_tensor1.remove()
+                    handle_tensor2.remove()
+
+                    gradient_diff = grads['gradient']['difference'].squeeze().numpy()
+                    gradient1 = grads['gradient']['activation1'].squeeze().numpy()
+                    gradient2 = grads['gradient']['activation2'].squeeze().numpy()
+
+                    im1 = (input1.squeeze().numpy()) # 3d
+                    im2 = (input2.squeeze().numpy())
+
+                    AM_diff, gradCAMelement_diff, gradCAM_diff = get_all_maps(activation_diff, gradient_diff)
+                    AM1, gradCAMelement1, gradCAM1 = get_all_maps(activation1, gradient1)
+                    AM2, gradCAMelement2, gradCAM2 = get_all_maps(activation2, gradient2)
+
+                    label = f't1-{int(target1)}-t2-{int(target2)}-pred-{predicted.cpu().detach().item():.2f}'
+
+                    # TODO:
+                    def find_xyz(heatmap):
+                        x,y,z = np.where(heatmap == heatmap.max())
+                        return x,y,z
+
+                    x, y, z = find_xyz(gradCAMelement_diff)
+                    if len(x)>1:
+                        x, y, z = x[-1], y[-1], z[-1]
+
+                    # AM_diff_xyz = find_xyz(AM_diff)
+                    # gradCAMelement_diff_xyz = find_xyz(gradCAMelement_diff)
+                    # gradCAMelement_xyz = find_xyz(gradCAMelement1+gradCAMelement2)
+                    # gradCAM_diff_xyz =find_xyz(gradCAM_diff)
+                    # gradCAM_xyz = find_xyz(gradCAM1+gradCAM2)
+
+
+                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, AM_diff, AM_diff)
+                    # handle_image_saving(activation_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'AMdiff', save_image=True, save_mask=False)
+                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, AM1, AM2)
+                    # handle_image_saving(activation_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'AMseparate', save_image=True, save_mask=False)
+
+                    orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAMelement_diff, gradCAMelement_diff, x, y, z)
+                    handle_image_saving(gradcamelement_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCEdiff', save_image=True, save_mask=False)
+                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAMelement1, gradCAMelement2)
+                    # handle_image_saving(gradcamelement_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCEseparate', save_image=True, save_mask=False)
+                    #
+                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAM_diff, gradCAM_diff)
+                    # handle_image_saving(gradcam_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCdiff', save_image=True, save_mask=False)
+                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAM1, gradCAM2)
+                    # handle_image_saving(gradcam_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCseparate', save_image=True, save_mask=False)
+
+                    torch.cuda.empty_cache()
+
+                # write_imgs_iterate(activation_diff_dict, f'{dir_cam}', f'{subject_name}-AMdiff', num_rows, num_cols)
+                # write_imgs_iterate(activation_separate_dict, f'{dir_cam}', f'{subject_name}-AMseparate', num_rows, num_cols)
+                write_imgs_iterate(gradcamelement_diff_dict, f'{dir_cam}', f'{subject_name}-GCEdiff', num_rows, num_cols)
+                # write_imgs_iterate(gradcamelement_separate_dict, f'{dir_cam}', f'{subject_name}-GCEseparate', num_rows, num_cols)
+                # write_imgs_iterate(gradcam_diff_dict, f'{dir_cam}', f'{subject_name}-GCdiff', num_rows, num_cols)
+                # write_imgs_iterate(gradcam_separate_dict, f'{dir_cam}', f'{subject_name}-GCseparate', num_rows, num_cols)
 
 
 

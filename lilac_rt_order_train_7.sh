@@ -19,6 +19,26 @@ module load anaconda3
 source ./venv/bin/activate
 source activate lilac
 # Or if in your home dir: source ~/myvenv/bin/activate
+# python3 ./run.py \
+#     --jobname='lilac_rt_order_7' \
+#     --task_option='o' \
+#     --targetname='timepoint' \
+#     --backbone_name='cnn_3D' \
+#     --batchsize=8 \
+#     --max_epoch=100 \
+#     --output_directory='./output' \
+#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_128' \
+#     --image_size='128,128,128' \
+#     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
+#     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
+#     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
+#     --inter_num_ch=48
+    
+# 499049
+# inter_num_ch=48
+# RT_easy_crop128_1_20250608
+# cpus-per-task=12, batchsize=8
+
 python3 ./run.py \
     --jobname='lilac_rt_order_7' \
     --task_option='o' \
@@ -32,9 +52,6 @@ python3 ./run.py \
     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-    --inter_num_ch=48
-    
-# 499049
-# inter_num_ch=48
-# RT_easy_crop128_1_20250608
-# cpus-per-task=12, batchsize=8
+    --inter_num_ch=48 \
+    --run_mode='eval'
+# 500107
