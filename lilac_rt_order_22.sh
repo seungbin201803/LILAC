@@ -37,7 +37,7 @@ python3 ./run.py \
 # --inter_num_ch=16 \
 # --num_block=6
     
-# 
+# 709143
 # Resnet183D
 # allpair
 # no early stop, lrscheduler 20 0.5

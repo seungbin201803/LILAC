@@ -185,7 +185,7 @@ class ResNet183D(nn.Module):
     def __init__(self, inputsize):
         super(ResNet183D, self).__init__()
         self.in_channels = 64
-        self.conv1 = nn.Conv3d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv3d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm3d(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
@@ -196,7 +196,7 @@ class ResNet183D(nn.Module):
         self.layer4 = self._make_layer(ResNet3DBasicBlock, 512, 2, stride=2)
         
         self.feature_image = (torch.tensor(inputsize) / 16)
-        self.feature_channel = 64
+        self.feature_channel = 512
         self.linear = nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()), 1, bias=False)
         # self.feature_image = (torch.tensor(inputsize) / (2**(n_of_blocks)))
         # self.feature_channel = initial_channel
