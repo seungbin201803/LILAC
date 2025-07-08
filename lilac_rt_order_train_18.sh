@@ -19,6 +19,30 @@ module load anaconda3
 source ./venv/bin/activate
 source activate lilac
 # Or if in your home dir: source ~/myvenv/bin/activate
+# python3 ./run.py \
+#     --jobname='lilac_rt_order_18' \
+#     --task_option='o' \
+#     --targetname='timepoint' \
+#     --backbone_name='cnn_3D' \
+#     --batchsize=8 \
+#     --max_epoch=200 \
+#     --output_directory='./output' \
+#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_80' \
+#     --image_size='80,80,80' \
+#     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
+#     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
+#     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
+#     --earlystopping=200 \
+#     --lrscheduler 20 0.5
+#--inter_num_ch=16 \
+#--num_block=6
+    
+# 500162
+# lrscheduler 20 0.5
+# exclude_sametarget=False
+# image_crop_80, image_size='80,80,80'
+# RT_easy_crop128_1_20250608
+
 python3 ./run.py \
     --jobname='lilac_rt_order_18' \
     --task_option='o' \
@@ -33,12 +57,6 @@ python3 ./run.py \
     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
     --earlystopping=200 \
-    --lrscheduler 20 0.5
-#--inter_num_ch=16 \
-#--num_block=6
-    
-# 500162
-# lrscheduler 20 0.5
-# exclude_sametarget=False
-# image_crop_80, image_size='80,80,80'
-# RT_easy_crop128_1_20250608
+    --lrscheduler 20 0.5 \
+# 501951
+# 502366

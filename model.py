@@ -151,6 +151,88 @@ class CNNbasic3D(nn.Module):
         y = self.linear(x)
         return y
 
+
+class ResNet3DBasicBlock(nn.Module):
+    def __init__(self, in_channels, out_channels, stride=1):
+        super(ResNet3DBasicBlock, self).__init__()
+        self.conv1 = nn.Conv3d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm3d(out_channels)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv3d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm3d(out_channels)
+        
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_channels != out_channels:
+            self.shortcut = nn.Sequential(
+                nn.Conv3d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm3d(out_channels)
+            )
+
+    def forward(self, x):
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out += self.shortcut(x)
+        out = self.relu(out)
+        return out
+
+class ResNet183D(nn.Module):
+    '''
+    https://www.geeksforgeeks.org/deep-learning/resnet18-from-scratch-using-pytorch/
+    '''
+    def __init__(self, inputsize):
+        super(ResNet183D, self).__init__()
+        self.in_channels = 64
+        self.conv1 = nn.Conv3d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm3d(64)
+        self.relu = nn.ReLU(inplace=True)
+        self.maxpool = nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
+        
+        self.layer1 = self._make_layer(ResNet3DBasicBlock, 64, 2, stride=1)
+        self.layer2 = self._make_layer(ResNet3DBasicBlock, 128, 2, stride=2)
+        self.layer3 = self._make_layer(ResNet3DBasicBlock, 256, 2, stride=2)
+        self.layer4 = self._make_layer(ResNet3DBasicBlock, 512, 2, stride=2)
+        
+        self.feature_image = (torch.tensor(inputsize) / 16)
+        self.feature_channel = 64
+        self.linear = nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()), 1, bias=False)
+        # self.feature_image = (torch.tensor(inputsize) / (2**(n_of_blocks)))
+        # self.feature_channel = initial_channel
+        #self.linear = nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()) + additional_feature, 1, bias=False)
+
+        # self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        # self.linear = nn.Linear(512, 1, bias=False)
+
+    def _make_layer(self, block, out_channels, num_blocks, stride):
+        strides = [stride] + [1] * (num_blocks - 1)
+        layers = []
+        for stride in strides:
+            layers.append(block(self.in_channels, out_channels, stride))
+            self.in_channels = out_channels
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+        out = self.maxpool(out)
+        
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+
+        out = out.view(out.shape[0], (self.feature_channel * (self.feature_image.prod()).type(torch.int).item()))
+        y = self.linear(out)
+        return y
+        
+        # out = self.avgpool(out)
+        # out = out.view(out.size(0), -1)
+        # out = self.fc(out)
+        # return out
+
 def get_backbone(args=None):
     assert args != None, 'arguments are required for network configurations'
     # TODO args.optional_meta type should be list
@@ -177,9 +259,13 @@ def get_backbone(args=None):
             backbone.conv1 = nn.Conv2d(args.image_channel, 64, 7, 2, 3, bias=False)
         linear = nn.Linear(512 + n_of_meta, 1, bias=False)
         backbone.fc = nn.Identity()
+    elif backbone_name == 'resnet18_3D':
+        backbone = ResNet183D(inputsize=args.image_size)
+        linear = backbone.linear
+        backbone.linear = nn.Identity()
     else:
         raise NotImplementedError(f"{args.backbone_name} not implemented yet")
-
+    
     return backbone, linear
 
 class LILAC(nn.Module):

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#SBATCH --job-name=lilac_rt_order_10 # give your job a name
+#SBATCH --job-name=lilac_rt_order_19 # give your job a name
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
 ##SBATCH --time=48:00:00 # set this time according to your need
@@ -18,9 +18,9 @@ module purge
 module load anaconda3
 source ./venv/bin/activate
 source activate lilac
-# Or if in your home dir: source ~/myvenv/bin/activate
+Or if in your home dir: source ~/myvenv/bin/activate
 # python3 ./run.py \
-#     --jobname='lilac_rt_order_10' \
+#     --jobname='lilac_rt_order_19' \
 #     --task_option='o' \
 #     --targetname='timepoint' \
 #     --backbone_name='cnn_3D' \
@@ -29,21 +29,20 @@ source activate lilac
 #     --output_directory='./output' \
 #     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_80' \
 #     --image_size='80,80,80' \
-#     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
-#     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
-#     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-#--inter_num_ch=16 \
-#--num_block=6
+#     --csv_file_train='./RT_allpair_crop128__train.csv' \
+#     --csv_file_val='./RT_allpair_crop128__val.csv' \
+#     --csv_file_test='./RT_allpair_crop128__test.csv' \
+#     --path_pretrained_model='./output/lilac_rt_order_10-temporal_ordering-backbone_cnn_3D-lr0.001-seed0-batch8/model_best.pth'
+# --inter_num_ch=16 \
+# --num_block=6
     
-# 499173
-# image_crop_80, image_size='80,80,80'
-# RT_easy_crop128_1_20250608
-# cpus-per-task=12, batchsize=8
+# 502367
+# pretrain from #10# RT_allpair_crop128
 
 
-### test
+# ### test
 python3 ./run.py \
-    --jobname='lilac_rt_order_10' \
+    --jobname='lilac_rt_order_19' \
     --task_option='o' \
     --targetname='timepoint' \
     --backbone_name='cnn_3D' \
@@ -52,13 +51,12 @@ python3 ./run.py \
     --output_directory='./output' \
     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_80' \
     --image_size='80,80,80' \
-    --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
-    --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
-    --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
+    --csv_file_train='./RT_allpair_crop128__train.csv' \
+    --csv_file_val='./RT_allpair_crop128__val.csv' \
+    --csv_file_test='./RT_allpair_crop128__test.csv' \
+    --path_pretrained_model='./output/lilac_rt_order_10-temporal_ordering-backbone_cnn_3D-lr0.001-seed0-batch8/model_best.pth'\
     --run_mode='eval'
-# 499365
-# 502329
-# 515973
+# 518002
 
 # ### gradcam
 # python3 ./run.py \
@@ -75,13 +73,4 @@ python3 ./run.py \
 #     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
 #     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
 #     --run_mode='eval' \
-#     --gradcam
-# # 500247
-# # 500252
-# # 500254
-# # 500255
-# # 500265
-# # 500266
-# # 501925
-# # 501926
-# # 501960
+#     #--gradcam
