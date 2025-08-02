@@ -263,13 +263,13 @@ def get_score(opt, resultfilename):
     from scipy.stats import pearsonr
     sigmoid = nn.Sigmoid()
 
-    def rmse(a, b):
-        return metrics.mean_squared_error(a, b, squared=False)
+    # def rmse(a, b):
+    #     return metrics.mean_squared_error(a, b, squared=False)
 
     dict_metric = {'auc': metrics.roc_auc_score, 'pearson': pearsonr,
-                   'rmse': rmse, 'loss': opt.loss}
+                   'rmse': metrics.root_mean_squared_error, 'loss': opt.loss, 'mse':metrics.mean_squared_error}
     dict_task_metrics = {'o': ['loss', 'auc', 'acc'],
-                         't': ['loss', 'rmse'],
+                         't': ['loss', 'rmse', 'mse'],
                          's': ['loss', 'rmse']}
 
     result = pd.read_csv(resultfilename)
@@ -316,8 +316,9 @@ def get_score(opt, resultfilename):
                 elif f == 0: pred_class.append(2) #same
                 elif f > 0: pred_class.append(1) #true
             pred_class = np.array(pred_class)
-            print('warning: ACC calculated only for binary pairs')
-            print(f'ACC: {accuracy_score(target_diff[target_diff != 0.5], pred_class[target_diff != 0.5]):.3}')
+            print('warning: ACC calculated only for binary/positive pairs')
+            #print(f'ACC: {accuracy_score(target_diff[target_diff != 0.5], pred_class[target_diff != 0.5]):.3}')
+            print(f'ACC: {accuracy_score(target_diff[target_diff == 1], pred_class[target_diff == 1]):.3}')
 
             # ### Confusion matrix
             # cm = confusion_matrix(target_diff[target_diff != 0.5], pred_class[target_diff != 0.5])
@@ -336,25 +337,34 @@ def get_score(opt, resultfilename):
 
             ### Accuracy, target interval
             class_interval = {}
-            class_interval_case = {}
+            #class_interval_case = {}
+            class_interval_fromone = {}
             for t1, t2, f in zip(target1, target2, feature_diff):
                 interval = (t2-t1).item()
                 if interval == 0: continue
+                elif interval < 0: continue
 
                 if interval not in class_interval: 
                     class_interval[interval]=[]
+                if interval not in class_interval_fromone:
+                    class_interval_fromone[interval] = []
             
                 if f < 0: class_interval[interval].append(0) #false
                 elif f == 0: class_interval[interval].append(2) #same
                 elif f > 0: class_interval[interval].append(1) #true
 
-                case = str(int(t1))+'-'+str(int(t2))
-                if case not in class_interval_case:
-                    class_interval_case[case] = []
+                if t1 == 1:
+                    if f < 0: class_interval_fromone[interval].append(0) #false
+                    elif f == 0: class_interval_fromone[interval].append(2) #same
+                    elif f > 0: class_interval_fromone[interval].append(1) #true
+
+                # case = str(int(t1))+'-'+str(int(t2))
+                # if case not in class_interval_case:
+                #     class_interval_case[case] = []
                 
-                if f < 0: class_interval_case[case].append(0) #false
-                elif f == 0: class_interval_case[case].append(2) #same
-                elif f > 0: class_interval_case[case].append(1) #true
+                # if f < 0: class_interval_case[case].append(0) #false
+                # elif f == 0: class_interval_case[case].append(2) #same
+                # elif f > 0: class_interval_case[case].append(1) #true
 
             acc_interval_dict = {}
             for interval in sorted(class_interval.keys()):
@@ -364,7 +374,7 @@ def get_score(opt, resultfilename):
                 elif interval > 0: target_class = np.array([1 for x in range(len(pred_class))])
 
                 acc_interval = accuracy_score(target_class[target_class != 0.5], pred_class[target_class != 0.5])
-                acc_interval_dict[interval] = acc_interval
+                acc_interval_dict[interval] = [acc_interval, len(pred_class[target_class != 0.5])]
 
                 print(f'interval {str(interval)}: \
                       acc={acc_interval:.3} \
@@ -372,45 +382,71 @@ def get_score(opt, resultfilename):
                 # print(pred_class)
                 # print(target_class)
             
-            acc_intervalcase_dict = {}
-            for intervalcase in class_interval_case.keys():
-                pred_class = np.array(class_interval_case[intervalcase])
-
-                splt = intervalcase.split('-')
-                interval = int(float(splt[1]))-int(float(splt[0]))
-                #print(splt, interval)
-
+            acc_intervalfromone_dict = {}
+            for interval in sorted(class_interval_fromone.keys()):
+                pred_class = np.array(class_interval_fromone[interval])
                 if interval < 0: target_class = np.array([0 for x in range(len(pred_class))])
                 elif interval == 0: target_class = np.array([0.5 for x in range(len(pred_class))])
                 elif interval > 0: target_class = np.array([1 for x in range(len(pred_class))])
 
                 acc_interval = accuracy_score(target_class[target_class != 0.5], pred_class[target_class != 0.5])
-                acc_intervalcase_dict[intervalcase] = acc_interval
+                acc_intervalfromone_dict[interval] = [acc_interval, len(pred_class[target_class != 0.5])]
 
-                print(f'interval case {intervalcase}: \
+                print(f'interval from one {str(interval)}: \
                       acc={acc_interval:.3} \
                       , num={len(pred_class[target_class != 0.5])}')
                 # print(pred_class)
                 # print(target_class)
             
-            interval_pos = [x for x in acc_interval_dict.keys() if x>0] 
-            interval_pos.sort()
-            acc_pos = [acc_interval_dict[x] for x in interval_pos]
-            fig = plt.figure()
-            plt.bar(interval_pos, acc_pos, edgecolor='black', facecolor='grey')
-            plt.xlabel('Imaging interval')
-            plt.ylabel('Accuracy')
-            plt.xticks(interval_pos)
-            fig.savefig(os.path.join(opt.output_fullname, 'acc_interval'+'.jpg'))
-            plt.close()
+            # acc_intervalcase_dict = {}
+            # for intervalcase in class_interval_case.keys():
+            #     pred_class = np.array(class_interval_case[intervalcase])
 
-            fig = plt.figure()
-            plt.bar(acc_intervalcase_dict.keys(), acc_intervalcase_dict.values(), edgecolor='black', facecolor='grey')
-            plt.xlabel('Imaging pair')
-            plt.ylabel('Accuracy')
-            plt.xticks(rotation=45)
-            fig.savefig(os.path.join(opt.output_fullname, 'acc_intervalcase'+'.jpg'))
-            plt.close()
+            #     splt = intervalcase.split('-')
+            #     interval = int(float(splt[1]))-int(float(splt[0]))
+            #     #print(splt, interval)
+
+            #     if interval < 0: target_class = np.array([0 for x in range(len(pred_class))])
+            #     elif interval == 0: target_class = np.array([0.5 for x in range(len(pred_class))])
+            #     elif interval > 0: target_class = np.array([1 for x in range(len(pred_class))])
+
+            #     acc_interval = accuracy_score(target_class[target_class != 0.5], pred_class[target_class != 0.5])
+            #     acc_intervalcase_dict[intervalcase] = acc_interval
+
+            #     print(f'interval case {intervalcase}: \
+            #           acc={acc_interval:.3} \
+            #           , num={len(pred_class[target_class != 0.5])}')
+            #     # print(pred_class)
+            #     # print(target_class)
+            
+            def plot_acc_bar(acc_interval_dict, name):
+                interval_pos = [x for x in acc_interval_dict.keys() if x>0] 
+                interval_pos.sort()
+                acc_pos = [acc_interval_dict[x][0] for x in interval_pos]
+                num_list = [acc_interval_dict[x][1] for x in interval_pos]
+                fig = plt.figure()
+                bar = plt.bar(interval_pos, acc_pos, edgecolor='black', facecolor='grey')
+                for i, rect in enumerate(bar):
+                    height = rect.get_height()
+                    plt.text(rect.get_x() + rect.get_width() / 2.0, height, f'{num_list[i]}', ha='center', va='bottom')
+                if name == 'acc_interval': plt.xlabel('Image interval')
+                elif name == 'acc_intervalfromone': plt.xlabel('Image interval from the first image')
+                plt.ylabel('Accuracy')
+                plt.xticks(interval_pos)
+                fig.savefig(os.path.join(opt.output_fullname, name+'.jpg'))
+                fig.savefig(os.path.join(opt.output_fullname, name+'.pdf'))
+                plt.close()
+
+            plot_acc_bar(acc_interval_dict, 'acc_interval')
+            plot_acc_bar(acc_intervalfromone_dict, 'acc_intervalfromone')
+            
+            # fig = plt.figure()
+            # plt.bar(acc_intervalcase_dict.keys(), acc_intervalcase_dict.values(), edgecolor='black', facecolor='grey')
+            # plt.xlabel('Imaging pair')
+            # plt.ylabel('Accuracy')
+            # plt.xticks(rotation=45)
+            # fig.savefig(os.path.join(opt.output_fullname, 'acc_intervalcase'+'.jpg'))
+            # plt.close()
 
             ### Plot histogram of pred_positive
             feature_diff_sig = sigmoid(torch.tensor(feature_diff)).numpy()
@@ -430,6 +466,8 @@ def get_score(opt, resultfilename):
                 print(f'{dtm.upper()}: {opt.loss(torch.tensor(feature_diff), torch.tensor(target_diff)).item():.3f}')
             else:
                 print(f'{dtm.upper()}: {dict_metric[dtm](target_diff, feature_diff):.3f}')
+
+
 
 
 def test(network,opt, overwrite = False):
@@ -506,6 +544,7 @@ def test(network,opt, overwrite = False):
         run = True
 
     if run:
+        print("RUN TEST")
         cuda = True
         Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
 
@@ -657,13 +696,7 @@ def test(network,opt, overwrite = False):
         #             print(f'{dtm.upper()}: {dict_metric[dtm](target_diff, feature_diff)}:.3f')
 
     if opt.gradcam:
-        dir_cam = os.path.join(opt.output_fullname, 'gradcam')
-        # if os.path.isdir(dir_cam):
-        #     print('dir_cam exists.')
-        #     exit()
-        if os.path.isdir(dir_cam) is False:
-            os.mkdir(dir_cam)
-        visualize_gradcam_pair(network, opt, args.test_loader, dir_cam, visualization=True)
+        visualize_gradcam_pair(network, opt, args.test_loader, visualization=False)
 
 
 def parse_args():
@@ -700,7 +733,7 @@ def parse_args():
     parser.add_argument('--optional_meta', default='', type=str,
                         help='list optional meta names to be used (e.g., ["AGE", "AGE_x_SEX"]). csv files should include the meta data name')
     parser.add_argument('--backbone_name', default='cnn_3D', type=str,
-                        help="implemented models: cnn_3D, cnn_2D, resnet50_2D, resnet18_2D")
+                        help="implemented models: cnn_3D, cnn_2D, resnet50_2D, resnet18_2D, resnet18_3D")
 
     parser.add_argument('--run_mode', default='train', choices=['train', 'eval'], help="select mode")  # required=True,
     parser.add_argument('--pretrained_weight', default=False, action='store_true')
@@ -795,12 +828,23 @@ def run_setup(args):
     print(f'RUN MODE: {args.run_mode}')
     print(f"Num of GPUs: {torch.cuda.device_count()}")
 
-def visualize_gradcam_pair(network, opt, loader, dir_cam, visualization=False):
+def visualize_gradcam_pair(network, opt, loader, visualization=False):
     '''
     https://github.com/heejong-kim/learning-to-compare-longitudinal-images-3d/blob/978e7ae07acf3eb6299b50f3f6b18a5b89b7c3eb/train-aging.py#L1419
     '''
-    if visualization: fname_cam_summary = os.path.join(dir_cam, 'gradcam-summary_visualization.txt')
-    else: fname_cam_summary = os.path.join(dir_cam, 'gradcam-summary.txt')
+    dir_cam = os.path.join(opt.output_fullname, 'gradcam')
+    # if os.path.isdir(dir_cam):
+    #     print('dir_cam exists.')
+    #     exit()
+    if os.path.isdir(dir_cam) is False:
+        os.mkdir(dir_cam)
+    
+    dir_arr = os.path.join(opt.output_fullname, 'gradcam_arr')
+    if os.path.isdir(dir_arr) is False:
+        os.mkdir(dir_arr)
+    
+    # if visualization: fname_cam_summary = os.path.join(dir_cam, 'gradcam-summary_visualization.txt')
+    # else: fname_cam_summary = os.path.join(dir_cam, 'gradcam-summary.txt')
 
     import torchio as tio
     def write_imgs_iterate(img_dict, save_dir, save_name, num_rows, num_cols):
@@ -826,6 +870,18 @@ def visualize_gradcam_pair(network, opt, loader, dir_cam, visualization=False):
 
         plt.clf()
         plt.close('all')
+    
+    def write_imgs_sb(img_dict, save_dir, save_name):
+        os.makedirs(save_dir, exist_ok=True)
+
+        for item in img_dict:
+            fig = plt.figure(figsize=(10,5))
+            plt.imshow(item["image"])
+            plt.title(item["title"])
+            plt.axis('off')
+            plt.tight_layout()
+            plt.savefig(os.path.join(save_dir, save_name+'_'+item["title"]+'.png'))
+            plt.close()
 
     def tensor_hook(grad):
         grads['gradient']['difference'] = (grad[0].cpu().detach())
@@ -886,7 +942,7 @@ def visualize_gradcam_pair(network, opt, loader, dir_cam, visualization=False):
         im_to_save = np.concatenate((orig_im, im_to_save), 1)
 
         if save_image:
-            title = f'label: {label}'
+            title = label #f'label: {label}'
             img_dict.append({"image": im_to_save, "title": title})
 
     def blend_concat(im1, im2, hm1, hm2, x, y, z):
@@ -951,205 +1007,161 @@ def visualize_gradcam_pair(network, opt, loader, dir_cam, visualization=False):
     network.eval()
     network.zero_grad()
 
-    if not visualization:
-        # roi1_collect = []
-        # roi2_collect = []
-        diffcam_collect = []
+    # subject-wise saving
+    subject_names = np.unique(result_pred.subject)
+    for subject_name in subject_names:
+        #if not os.path.exists(os.path.join(dir_cam, f'{subject_name}-GCEdiff.png')):
 
-        for data_index in range(len(result_pred)):
-            sys.stdout.write(
-                "\r [index %d/%d] "
-                % (data_index,
-                   len(result_pred),
-                   )
-            )
+        print(f'{subject_name}')
 
+        # data_index = np.where(np.logical_and(result_pred.subject == subject_name,
+        #                                      result_pred['gt-target'] > 0))[0]
+        data_index = np.where(np.logical_and(result_pred.subject == subject_name,
+                                                result_pred['target'] > 0))[0]
+
+        num_rows = int(np.ceil(np.sqrt(len(data_index))))
+        if num_rows == 0:
+            print(len(data_index))
+            num_rows = 1
+            num_cols = 1
+        else:
+            num_cols = int(np.ceil(len(data_index) / num_rows))
+
+
+        gradcamelement_diff_dict = []
+
+        for i in data_index:
             network.eval()
             network.zero_grad()
-            batch = loader_test.dataset.__getitem__(data_index)
-            # batchroi = loader_test_roi.__getitem__(data_index)
+            batch = loader_test.dataset.__getitem__(i)
 
             # get matched ROI map
 
-            grads = {'activation': [],
-                     'gradient': {}}  # an empty dictionary
+            grads = {'activation':[],
+                        'gradient':{}}  # an empty dictionary
 
             if len(args.optional_meta) > 0:
                 I1, I2 = batch
                 input1, target1, meta1 = I1
                 input2, target2, meta2 = I2
-                # predicted, f1, f2 = network(input2.type(Tensor), input1.type(Tensor),
-                #                     meta = [meta2.type(Tensor), meta1.type(Tensor)], return_f=True)
+                # predicted = network(input2.type(Tensor), input1.type(Tensor),
+                #                     meta = [meta2.type(Tensor), meta1.type(Tensor)])
             else:
                 I1, I2 = batch
                 input1, target1 = I1
                 input2, target2 = I2
-                #predicted, f1, f2 = network(input2.type(Tensor), input1.type(Tensor), return_f=True)
+                #predicted = network(input2.type(Tensor), input1.type(Tensor))
 
             #############################################################
-            ### Is it right?!
             input1 = torch.tensor(input1)[None, :]
             input2 = torch.tensor(input2)[None, :]
+            # print('input1: ', input1.shape) #torch.Size([1, 1, 80, 80, 80])
+            # print('input2: ', input2.shape) #torch.Size([1, 1, 80, 80, 80])
+            
+            if args.backbone_name == "resnet18_3D":
+                feature_tensor1 = network.module.backbone.conv1(input1.type(Tensor).to(device))
+                feature_tensor1 = network.module.backbone.bn1(feature_tensor1)
+                feature_tensor1 = network.module.backbone.relu(feature_tensor1)
+                feature_tensor1 = network.module.backbone.maxpool(feature_tensor1)
+                feature_tensor1 = network.module.backbone.layer1(feature_tensor1)
+                feature_tensor1 = network.module.backbone.layer2(feature_tensor1)
+                feature_tensor1 = network.module.backbone.layer3(feature_tensor1)
+                feature_tensor1 = network.module.backbone.layer4(feature_tensor1)
 
-            feature_tensor1 = -network.module.backbone.encoder(input1.type(Tensor).to(device))
-            feature_tensor2 = network.module.backbone.encoder(input2.type(Tensor).to(device))
-            feature_tensor = feature_tensor2 + feature_tensor1
+                feature_tensor2 = network.module.backbone.conv1(input2.type(Tensor).to(device))
+                feature_tensor2 = network.module.backbone.bn1(feature_tensor2)
+                feature_tensor2 = network.module.backbone.relu(feature_tensor2)
+                feature_tensor2 = network.module.backbone.maxpool(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer1(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer2(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer3(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer4(feature_tensor2)
+            else:
+                feature_tensor1 = network.module.backbone.encoder(input1.type(Tensor).to(device))
+                feature_tensor2 = network.module.backbone.encoder(input2.type(Tensor).to(device))
+            #feature_tensor = feature_tensor2 + feature_tensor1
+            feature_tensor = feature_tensor2 - feature_tensor1
+            #print('feature_tensor: ', feature_tensor.shape) #torch.Size([1, 16, 5, 5, 5])
 
             activation_diff = feature_tensor.cpu().detach().squeeze().numpy()
+            # activation1 = feature_tensor1.cpu().detach().squeeze().numpy()
+            # activation2 = feature_tensor2.cpu().detach().squeeze().numpy()
+            #print("activation_diff: ", activation_diff.shape) #(16, 5, 5, 5)
 
             handle_tensor = feature_tensor.register_hook(tensor_hook)
+            # handle_tensor1 = feature_tensor1.register_hook(tensor_hook_input1)
+            # handle_tensor2 = feature_tensor2.register_hook(tensor_hook_input2)
+
             feature_tensor = torch.flatten(feature_tensor, 1)
-            predicted = network.module.linear(feature_tensor)
-           
+            predicted = network.module.linear(feature_tensor) 
+
             predicted.backward()
             handle_tensor.remove()
+            # handle_tensor1.remove()
+            # handle_tensor2.remove()
 
             gradient_diff = grads['gradient']['difference'].squeeze().numpy()
+            # gradient1 = grads['gradient']['activation1'].squeeze().numpy()
+            # gradient2 = grads['gradient']['activation2'].squeeze().numpy()
+            #print("gradient_diff: ", gradient_diff.shape) 
 
-            # save elementwise gradcam:
-            gradcam_activation_elementwise = (activation_diff * gradient_diff).sum(0)
-            # roi_avg = calculate_roi_values(roi1, roi2, gradcam_activation_elementwise)
-            # roi1_collect.append(roi_avg[:, 0])
-            # roi2_collect.append(roi_avg[:, 1])
-            diffcam_collect.append(gradcam_activation_elementwise.flatten())
-            #############################################################
+            im1 = (input1.squeeze().numpy()) # 3d
+            im2 = (input2.squeeze().numpy())
+            AM_diff, gradCAMelement_diff, gradCAM_diff = get_all_maps(activation_diff, gradient_diff)
+            # AM1, gradCAMelement1, gradCAM1 = get_all_maps(activation1, gradient1)
+            # AM2, gradCAMelement2, gradCAM2 = get_all_maps(activation2, gradient2)
+            #print('gradCAMelement_diff: ', gradCAMelement_diff.shape) #(80, 80, 80)
 
-        # np.savetxt(fname_roi1_summary, np.array(roi1_collect))
-        # np.savetxt(fname_roi2_summary, np.array(roi2_collect))
-        np.savetxt(fname_cam_summary, np.array(diffcam_collect))
-        print(fname_cam_summary)
-    else:
-        # subject-wise saving
-        subject_names = np.unique(result_pred.subject)
-        for subject_name in subject_names:
-            if not os.path.exists(os.path.join(dir_cam, f'{subject_name}-GCEdiff.png')):
+            label = f'{subject_name}_t1_{int(target1)}_t2_{int(target2)}_pred_{predicted.cpu().detach().item():.2f}'
+            np.save(os.path.join(dir_arr, label+'.npy'), gradCAMelement_diff)
+            # np.save(os.path.join(dir_actgrad, subject_name+'_actdif.npy'), activation_diff)
+            # np.save(os.path.join(dir_actgrad, subject_name+'_graddif.npy'), gradient_diff)
+            
+            if visualization:
 
-                print(f'{subject_name}')
+                # TODO:
+                def find_xyz(heatmap):
+                    x,y,z = np.where(heatmap == heatmap.max())
+                    return x,y,z
 
-                # data_index = np.where(np.logical_and(result_pred.subject == subject_name,
-                #                                      result_pred['gt-target'] > 0))[0]
-                data_index = np.where(np.logical_and(result_pred.subject == subject_name,
-                                                        result_pred['target'] > 0))[0]
+                x, y, z = find_xyz(gradCAMelement_diff)
+                if len(x)>1:
+                    x, y, z = x[-1], y[-1], z[-1]
 
-                num_rows = int(np.ceil(np.sqrt(len(data_index))))
-                if num_rows == 0:
-                    print(len(data_index))
-                    num_rows = 1
-                    num_cols = 1
-                else:
-                    num_cols = int(np.ceil(len(data_index) / num_rows))
-
-
-                gradcamelement_diff_dict = []
-
-                for i in data_index:
-                    network.eval()
-                    network.zero_grad()
-                    batch = loader_test.dataset.__getitem__(i)
-
-                    # get matched ROI map
-
-                    grads = {'activation':[],
-                                'gradient':{}}  # an empty dictionary
-
-                    if len(args.optional_meta) > 0:
-                        I1, I2 = batch
-                        input1, target1, meta1 = I1
-                        input2, target2, meta2 = I2
-                        # predicted = network(input2.type(Tensor), input1.type(Tensor),
-                        #                     meta = [meta2.type(Tensor), meta1.type(Tensor)])
-                    else:
-                        I1, I2 = batch
-                        input1, target1 = I1
-                        input2, target2 = I2
-                        #predicted = network(input2.type(Tensor), input1.type(Tensor))
-
-                    #############################################################
-                    ### Is it right?!
-                    input1 = torch.tensor(input1)[None, :]
-                    input2 = torch.tensor(input2)[None, :]
-                    # print('input1: ', input1.shape) #torch.Size([1, 1, 80, 80, 80])
-                    # print('input2: ', input2.shape) #torch.Size([1, 1, 80, 80, 80])
-                    
-                    feature_tensor1 = -network.module.backbone.encoder(input1.type(Tensor).to(device))
-                    feature_tensor2 = network.module.backbone.encoder(input2.type(Tensor).to(device))
-                    feature_tensor = feature_tensor2 + feature_tensor1
-                    #print('feature_tensor: ', feature_tensor.shape) #torch.Size([1, 16, 5, 5, 5])
-
-                    activation_diff = feature_tensor.cpu().detach().squeeze().numpy()
-                    activation1 = feature_tensor1.cpu().detach().squeeze().numpy()
-                    activation2 = feature_tensor2.cpu().detach().squeeze().numpy()
-                    #print("activation_diff: ", activation_diff.shape) #(16, 5, 5, 5)
-
-                    handle_tensor = feature_tensor.register_hook(tensor_hook)
-                    handle_tensor1 = feature_tensor1.register_hook(tensor_hook_input1)
-                    handle_tensor2 = feature_tensor2.register_hook(tensor_hook_input2)
-
-                    feature_tensor = torch.flatten(feature_tensor, 1)
-
-                    predicted = network.module.linear(feature_tensor) ### Is this right?!
-
-                    predicted.backward()
-                    handle_tensor.remove()
-                    handle_tensor1.remove()
-                    handle_tensor2.remove()
-
-                    gradient_diff = grads['gradient']['difference'].squeeze().numpy()
-                    gradient1 = grads['gradient']['activation1'].squeeze().numpy()
-                    gradient2 = grads['gradient']['activation2'].squeeze().numpy()
-                    #print("gradient_diff: ", gradient_diff.shape) 
-
-                    im1 = (input1.squeeze().numpy()) # 3d
-                    im2 = (input2.squeeze().numpy())
-
-                    AM_diff, gradCAMelement_diff, gradCAM_diff = get_all_maps(activation_diff, gradient_diff)
-                    # AM1, gradCAMelement1, gradCAM1 = get_all_maps(activation1, gradient1)
-                    # AM2, gradCAMelement2, gradCAM2 = get_all_maps(activation2, gradient2)
-                    #print('gradCAMelement_diff: ', gradCAMelement_diff.shape) #(80, 80, 80)
-
-                    label = f't1-{int(target1)}-t2-{int(target2)}-pred-{predicted.cpu().detach().item():.2f}'
-
-                    # TODO:
-                    def find_xyz(heatmap):
-                        x,y,z = np.where(heatmap == heatmap.max())
-                        return x,y,z
-
-                    x, y, z = find_xyz(gradCAMelement_diff)
-                    if len(x)>1:
-                        x, y, z = x[-1], y[-1], z[-1]
-
-                    # AM_diff_xyz = find_xyz(AM_diff)
-                    # gradCAMelement_diff_xyz = find_xyz(gradCAMelement_diff)
-                    # gradCAMelement_xyz = find_xyz(gradCAMelement1+gradCAMelement2)
-                    # gradCAM_diff_xyz =find_xyz(gradCAM_diff)
-                    # gradCAM_xyz = find_xyz(gradCAM1+gradCAM2)
+                # AM_diff_xyz = find_xyz(AM_diff)
+                # gradCAMelement_diff_xyz = find_xyz(gradCAMelement_diff)
+                # gradCAMelement_xyz = find_xyz(gradCAMelement1+gradCAMelement2)
+                # gradCAM_diff_xyz =find_xyz(gradCAM_diff)
+                # gradCAM_xyz = find_xyz(gradCAM1+gradCAM2)
 
 
-                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, AM_diff, AM_diff)
-                    # handle_image_saving(activation_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'AMdiff', save_image=True, save_mask=False)
-                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, AM1, AM2)
-                    # handle_image_saving(activation_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'AMseparate', save_image=True, save_mask=False)
+                # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, AM_diff, AM_diff)
+                # handle_image_saving(activation_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'AMdiff', save_image=True, save_mask=False)
+                # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, AM1, AM2)
+                # handle_image_saving(activation_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'AMseparate', save_image=True, save_mask=False)
 
-                    orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAMelement_diff, gradCAMelement_diff, x, y, z)
-                    handle_image_saving(gradcamelement_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCEdiff', save_image=True, save_mask=False)
-                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAMelement1, gradCAMelement2)
-                    # handle_image_saving(gradcamelement_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCEseparate', save_image=True, save_mask=False)
-                    #
-                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAM_diff, gradCAM_diff)
-                    # handle_image_saving(gradcam_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCdiff', save_image=True, save_mask=False)
-                    # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAM1, gradCAM2)
-                    # handle_image_saving(gradcam_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCseparate', save_image=True, save_mask=False)
+                orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAMelement_diff, gradCAMelement_diff, x, y, z)
+                handle_image_saving(gradcamelement_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCEdiff', save_image=True, save_mask=False)
+                # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAMelement1, gradCAMelement2)
+                # handle_image_saving(gradcamelement_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCEseparate', save_image=True, save_mask=False)
+                #
+                # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAM_diff, gradCAM_diff)
+                # handle_image_saving(gradcam_diff_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCdiff', save_image=True, save_mask=False)
+                # orig_pair, blended_im_concat, blended_img_mask_concat = blend_concat(im1, im2, gradCAM1, gradCAM2)
+                # handle_image_saving(gradcam_separate_dict, orig_pair, blended_im_concat, blended_img_mask_concat, label, 'GCseparate', save_image=True, save_mask=False)
 
-                    torch.cuda.empty_cache()
+            torch.cuda.empty_cache()
 
-                # write_imgs_iterate(activation_diff_dict, f'{dir_cam}', f'{subject_name}-AMdiff', num_rows, num_cols)
-                # write_imgs_iterate(activation_separate_dict, f'{dir_cam}', f'{subject_name}-AMseparate', num_rows, num_cols)
-                write_imgs_iterate(gradcamelement_diff_dict, f'{dir_cam}', f'{subject_name}-GCEdiff', num_rows, num_cols)
-                # write_imgs_iterate(gradcamelement_separate_dict, f'{dir_cam}', f'{subject_name}-GCEseparate', num_rows, num_cols)
-                # write_imgs_iterate(gradcam_diff_dict, f'{dir_cam}', f'{subject_name}-GCdiff', num_rows, num_cols)
-                # write_imgs_iterate(gradcam_separate_dict, f'{dir_cam}', f'{subject_name}-GCseparate', num_rows, num_cols)
+        if visualization:
+            # write_imgs_iterate(activation_diff_dict, f'{dir_cam}', f'{subject_name}-AMdiff', num_rows, num_cols)
+            # write_imgs_iterate(activation_separate_dict, f'{dir_cam}', f'{subject_name}-AMseparate', num_rows, num_cols)
+            write_imgs_iterate(gradcamelement_diff_dict, f'{dir_cam}', f'{subject_name}-GCEdiff', num_rows, num_cols)
+            # write_imgs_iterate(gradcamelement_separate_dict, f'{dir_cam}', f'{subject_name}-GCEseparate', num_rows, num_cols)
+            # write_imgs_iterate(gradcam_diff_dict, f'{dir_cam}', f'{subject_name}-GCdiff', num_rows, num_cols)
+            # write_imgs_iterate(gradcam_separate_dict, f'{dir_cam}', f'{subject_name}-GCseparate', num_rows, num_cols)
 
-
+            write_imgs_sb(gradcamelement_diff_dict, f'{dir_cam}', f'{subject_name}-GCEdiff')
+            
 
 if __name__ == "__main__":
 

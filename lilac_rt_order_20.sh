@@ -17,8 +17,54 @@
 module purge
 module load anaconda3
 source ./venv/bin/activate
-source activate lilac
-Or if in your home dir: source ~/myvenv/bin/activate
+source activate lilac2
+#Or if in your home dir: source ~/myvenv/bin/activate
+
+
+# python3 ./run.py \
+#     --jobname='lilac_rt_order_20' \
+#     --task_option='o' \
+#     --targetname='timepoint' \
+#     --backbone_name='cnn_3D' \
+#     --batchsize=8 \
+#     --max_epoch=200 \
+#     --output_directory='./output' \
+#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/fraction_crop_80' \
+#     --image_size='80,80,80' \
+#     --csv_file_train='./RT_allpair_crop80-ants-sim__train.csv' \
+#     --csv_file_val='./RT_allpair_crop80-ants-sim__val.csv' \
+#     --csv_file_test='./RT_allpair_crop80-ants-sim__test.csv' \
+#     --earlystopping=200 \
+#     --lrscheduler 20 0.5 \
+# --inter_num_ch=16 \
+# --num_block=6
+    
+# 709075
+# new data
+# allpair
+# no early stop, lrscheduler 20 0.5
+
+
+# # # ### test
+# python3 ./run.py \
+#     --jobname='lilac_rt_order_20' \
+#     --task_option='o' \
+#     --targetname='timepoint' \
+#     --backbone_name='cnn_3D' \
+#     --batchsize=8 \
+#     --max_epoch=200 \
+#     --output_directory='./output' \
+#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/fraction_crop_80' \
+#     --image_size='80,80,80' \
+#     --csv_file_train='./RT_allpair_crop80-ants-sim__train.csv' \
+#     --csv_file_val='./RT_allpair_crop80-ants-sim__val.csv' \
+#     --csv_file_test='./RT_allpair_crop80-ants-sim__test.csv' \
+#     --earlystopping=200 \
+#     --lrscheduler 20 0.5 \
+#     --run_mode='eval'
+# # 709231
+
+# ### gradcam
 python3 ./run.py \
     --jobname='lilac_rt_order_20' \
     --task_option='o' \
@@ -34,46 +80,6 @@ python3 ./run.py \
     --csv_file_test='./RT_allpair_crop80-ants-sim__test.csv' \
     --earlystopping=200 \
     --lrscheduler 20 0.5 \
-# --inter_num_ch=16 \
-# --num_block=6
-    
-# 709075
-# new data
-# allpair
-# no early stop, lrscheduler 20 0.5
-
-
-# # ### test
-# python3 ./run.py \
-#     --jobname='lilac_rt_order_19' \
-#     --task_option='o' \
-#     --targetname='timepoint' \
-#     --backbone_name='cnn_3D' \
-#     --batchsize=8 \
-#     --max_epoch=100 \
-#     --output_directory='./output' \
-#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_80' \
-#     --image_size='80,80,80' \
-#     --csv_file_train='./RT_allpair_crop128__train.csv' \
-#     --csv_file_val='./RT_allpair_crop128__val.csv' \
-#     --csv_file_test='./RT_allpair_crop128__test.csv' \
-#     --path_pretrained_model='./output/lilac_rt_order_10-temporal_ordering-backbone_cnn_3D-lr0.001-seed0-batch8/model_best.pth'\
-#     --run_mode='eval'
-# # 518002
-
-# ### gradcam
-# python3 ./run.py \
-#     --jobname='lilac_rt_order_10' \
-#     --task_option='o' \
-#     --targetname='timepoint' \
-#     --backbone_name='cnn_3D' \
-#     --batchsize=8 \
-#     --max_epoch=100 \
-#     --output_directory='./output' \
-#     --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/image_crop_80' \
-#     --image_size='80,80,80' \
-#     --csv_file_train='./RT_easy_crop128_1_20250608_train.csv' \
-#     --csv_file_val='./RT_easy_crop128_1_20250608_val.csv' \
-#     --csv_file_test='./RT_easy_crop128_1_20250608_test.csv' \
-#     --run_mode='eval' \
-#     #--gradcam
+    --run_mode='eval'\
+    --gradcam
+# 709234
