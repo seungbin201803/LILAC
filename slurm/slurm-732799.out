@@ -1,2 +1,0 @@
-/var/spool/slurm/slurmd/job732799/slurm_script: line 19: ./venv/bin/activate: No such file or directory
-python3: can't open file '/midtier/sablab/scratch/sep4013/LILAC/./tmp.py': [Errno 2] No such file or directory

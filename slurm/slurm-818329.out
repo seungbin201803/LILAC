@@ -1,2317 +1,0 @@
-/var/spool/slurm/slurmd/job818329/slurm_script: line 19: ./venv/bin/activate: No such file or directory
-/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torchio/data/image.py:253: UserWarning: Using TorchIO images without a torchio.SubjectsLoader in PyTorch >= 2.3 might have unexpected consequences, e.g., the collated batches will be instances of torchio.Subject with 5D images. Replace your PyTorch DataLoader with a torchio.SubjectsLoader so that the collated batch becomes a dictionary, as expected. See https://github.com/TorchIO-project/torchio/issues/1179 for more context about this issue.
-  warnings.warn(message, stacklevel=1)
- ----------------- Run Setup Summary -----------------
-JOB NAME: lilac_rt_order_38
-TASK: temporal_ordering
-Target Attribute: timepoint
-BACKBONE: resnet18_3D
-RUN MODE: savefeature
-Num of GPUs: 1
-Num of Model Parameter: 33203776
- ----------------- savefeature initiated -----------------
-#####  train
- [Batch 0/452] 
- [Batch 1/452] 
- [Batch 2/452] 
- [Batch 3/452] 
- [Batch 4/452] 
- [Batch 5/452] 
- [Batch 6/452] 
- [Batch 7/452] 
- [Batch 8/452] 
- [Batch 9/452] 
- [Batch 10/452] 
- [Batch 11/452] 
- [Batch 12/452] 
- [Batch 13/452] 
- [Batch 14/452] 
- [Batch 15/452] 
- [Batch 16/452] 
- [Batch 17/452] 
- [Batch 18/452] 
- [Batch 19/452] 
- [Batch 20/452] 
- [Batch 21/452] 
- [Batch 22/452] 
- [Batch 23/452] 
- [Batch 24/452] 
- [Batch 25/452] 
- [Batch 26/452] 
- [Batch 27/452] 
- [Batch 28/452] 
- [Batch 29/452] 
- [Batch 30/452] 
- [Batch 31/452] 
- [Batch 32/452] 
- [Batch 33/452] 
- [Batch 34/452] 
- [Batch 35/452] 
- [Batch 36/452] 
- [Batch 37/452] 
- [Batch 38/452] 
- [Batch 39/452] 
- [Batch 40/452] 
- [Batch 41/452] 
- [Batch 42/452] 
- [Batch 43/452] 
- [Batch 44/452] 
- [Batch 45/452] 
- [Batch 46/452] 
- [Batch 47/452] 
- [Batch 48/452] 
- [Batch 49/452] 
- [Batch 50/452] 
- [Batch 51/452] 
- [Batch 52/452] 
- [Batch 53/452] 
- [Batch 54/452] 
- [Batch 55/452] 
- [Batch 56/452] 
- [Batch 57/452] 
- [Batch 58/452] 
- [Batch 59/452] 
- [Batch 60/452] 
- [Batch 61/452] 
- [Batch 62/452] 
- [Batch 63/452] 
- [Batch 64/452] 
- [Batch 65/452] 
- [Batch 66/452] 
- [Batch 67/452] 
- [Batch 68/452] 
- [Batch 69/452] 
- [Batch 70/452] 
- [Batch 71/452] 
- [Batch 72/452] 
- [Batch 73/452] 
- [Batch 74/452] 
- [Batch 75/452] 
- [Batch 76/452] 
- [Batch 77/452] 
- [Batch 78/452] 
- [Batch 79/452] 
- [Batch 80/452] 
- [Batch 81/452] 
- [Batch 82/452] 
- [Batch 83/452] 
- [Batch 84/452] 
- [Batch 85/452] 
- [Batch 86/452] 
- [Batch 87/452] 
- [Batch 88/452] 
- [Batch 89/452] 
- [Batch 90/452] 
- [Batch 91/452] 
- [Batch 92/452] 
- [Batch 93/452] 
- [Batch 94/452] 
- [Batch 95/452] 
- [Batch 96/452] 
- [Batch 97/452] 
- [Batch 98/452] 
- [Batch 99/452] 
- [Batch 100/452] 
- [Batch 101/452] 
- [Batch 102/452] 
- [Batch 103/452] 
- [Batch 104/452] 
- [Batch 105/452] 
- [Batch 106/452] 
- [Batch 107/452] 
- [Batch 108/452] 
- [Batch 109/452] 
- [Batch 110/452] 
- [Batch 111/452] 
- [Batch 112/452] 
- [Batch 113/452] 
- [Batch 114/452] 
- [Batch 115/452] 
- [Batch 116/452] 
- [Batch 117/452] 
- [Batch 118/452] 
- [Batch 119/452] 
- [Batch 120/452] 
- [Batch 121/452] 
- [Batch 122/452] 
- [Batch 123/452] 
- [Batch 124/452] 
- [Batch 125/452] 
- [Batch 126/452] 
- [Batch 127/452] 
- [Batch 128/452] 
- [Batch 129/452] 
- [Batch 130/452] 
- [Batch 131/452] 
- [Batch 132/452] 
- [Batch 133/452] 
- [Batch 134/452] 
- [Batch 135/452] 
- [Batch 136/452] 
- [Batch 137/452] 
- [Batch 138/452] 
- [Batch 139/452] 
- [Batch 140/452] 
- [Batch 141/452] 
- [Batch 142/452] 
- [Batch 143/452] 
- [Batch 144/452] 
- [Batch 145/452] 
- [Batch 146/452] 
- [Batch 147/452] 
- [Batch 148/452] 
- [Batch 149/452] 
- [Batch 150/452] 
- [Batch 151/452] 
- [Batch 152/452] 
- [Batch 153/452] 
- [Batch 154/452] 
- [Batch 155/452] 
- [Batch 156/452] 
- [Batch 157/452] 
- [Batch 158/452] 
- [Batch 159/452] 
- [Batch 160/452] 
- [Batch 161/452] 
- [Batch 162/452] 
- [Batch 163/452] 
- [Batch 164/452] 
- [Batch 165/452] 
- [Batch 166/452] 
- [Batch 167/452] 
- [Batch 168/452] 
- [Batch 169/452] 
- [Batch 170/452] 
- [Batch 171/452] 
- [Batch 172/452] 
- [Batch 173/452] 
- [Batch 174/452] 
- [Batch 175/452] 
- [Batch 176/452] 
- [Batch 177/452] 
- [Batch 178/452] 
- [Batch 179/452] 
- [Batch 180/452] 
- [Batch 181/452] 
- [Batch 182/452] 
- [Batch 183/452] 
- [Batch 184/452] 
- [Batch 185/452] 
- [Batch 186/452] 
- [Batch 187/452] 
- [Batch 188/452] 
- [Batch 189/452] 
- [Batch 190/452] 
- [Batch 191/452] 
- [Batch 192/452] 
- [Batch 193/452] 
- [Batch 194/452] 
- [Batch 195/452] 
- [Batch 196/452] 
- [Batch 197/452] 
- [Batch 198/452] 
- [Batch 199/452] 
- [Batch 200/452] 
- [Batch 201/452] 
- [Batch 202/452] 
- [Batch 203/452] 
- [Batch 204/452] 
- [Batch 205/452] 
- [Batch 206/452] 
- [Batch 207/452] 
- [Batch 208/452] 
- [Batch 209/452] 
- [Batch 210/452] 
- [Batch 211/452] 
- [Batch 212/452] 
- [Batch 213/452] 
- [Batch 214/452] 
- [Batch 215/452] 
- [Batch 216/452] 
- [Batch 217/452] 
- [Batch 218/452] 
- [Batch 219/452] 
- [Batch 220/452] 
- [Batch 221/452] 
- [Batch 222/452] 
- [Batch 223/452] 
- [Batch 224/452] 
- [Batch 225/452] 
- [Batch 226/452] 
- [Batch 227/452] 
- [Batch 228/452] 
- [Batch 229/452] 
- [Batch 230/452] 
- [Batch 231/452] 
- [Batch 232/452] 
- [Batch 233/452] 
- [Batch 234/452] 
- [Batch 235/452] 
- [Batch 236/452] 
- [Batch 237/452] 
- [Batch 238/452] 
- [Batch 239/452] 
- [Batch 240/452] 
- [Batch 241/452] 
- [Batch 242/452] 
- [Batch 243/452] 
- [Batch 244/452] 
- [Batch 245/452] 
- [Batch 246/452] 
- [Batch 247/452] 
- [Batch 248/452] 
- [Batch 249/452] 
- [Batch 250/452] 
- [Batch 251/452] 
- [Batch 252/452] 
- [Batch 253/452] 
- [Batch 254/452] 
- [Batch 255/452] 
- [Batch 256/452] 
- [Batch 257/452] 
- [Batch 258/452] 
- [Batch 259/452] 
- [Batch 260/452] 
- [Batch 261/452] 
- [Batch 262/452] 
- [Batch 263/452] 
- [Batch 264/452] 
- [Batch 265/452] 
- [Batch 266/452] 
- [Batch 267/452] 
- [Batch 268/452] 
- [Batch 269/452] 
- [Batch 270/452] 
- [Batch 271/452] 
- [Batch 272/452] 
- [Batch 273/452] 
- [Batch 274/452] 
- [Batch 275/452] 
- [Batch 276/452] 
- [Batch 277/452] 
- [Batch 278/452] 
- [Batch 279/452] 
- [Batch 280/452] 
- [Batch 281/452] 
- [Batch 282/452] 
- [Batch 283/452] 
- [Batch 284/452] 
- [Batch 285/452] 
- [Batch 286/452] 
- [Batch 287/452] 
- [Batch 288/452] 
- [Batch 289/452] 
- [Batch 290/452] 
- [Batch 291/452] 
- [Batch 292/452] 
- [Batch 293/452] 
- [Batch 294/452] 
- [Batch 295/452] 
- [Batch 296/452] 
- [Batch 297/452] 
- [Batch 298/452] 
- [Batch 299/452] 
- [Batch 300/452] 
- [Batch 301/452] 
- [Batch 302/452] 
- [Batch 303/452] 
- [Batch 304/452] 
- [Batch 305/452] 
- [Batch 306/452] 
- [Batch 307/452] 
- [Batch 308/452] 
- [Batch 309/452] 
- [Batch 310/452] 
- [Batch 311/452] 
- [Batch 312/452] 
- [Batch 313/452] 
- [Batch 314/452] 
- [Batch 315/452] 
- [Batch 316/452] 
- [Batch 317/452] 
- [Batch 318/452] 
- [Batch 319/452] 
- [Batch 320/452] 
- [Batch 321/452] 
- [Batch 322/452] 
- [Batch 323/452] 
- [Batch 324/452] 
- [Batch 325/452] 
- [Batch 326/452] 
- [Batch 327/452] 
- [Batch 328/452] 
- [Batch 329/452] 
- [Batch 330/452] 
- [Batch 331/452] 
- [Batch 332/452] 
- [Batch 333/452] 
- [Batch 334/452] 
- [Batch 335/452] 
- [Batch 336/452] 
- [Batch 337/452] 
- [Batch 338/452] 
- [Batch 339/452] 
- [Batch 340/452] 
- [Batch 341/452] 
- [Batch 342/452] 
- [Batch 343/452] 
- [Batch 344/452] 
- [Batch 345/452] 
- [Batch 346/452] 
- [Batch 347/452] 
- [Batch 348/452] 
- [Batch 349/452] 
- [Batch 350/452] 
- [Batch 351/452] 
- [Batch 352/452] 
- [Batch 353/452] 
- [Batch 354/452] 
- [Batch 355/452] 
- [Batch 356/452] 
- [Batch 357/452] 
- [Batch 358/452] 
- [Batch 359/452] 
- [Batch 360/452] 
- [Batch 361/452] 
- [Batch 362/452] 
- [Batch 363/452] 
- [Batch 364/452] 
- [Batch 365/452] 
- [Batch 366/452] 
- [Batch 367/452] 
- [Batch 368/452] 
- [Batch 369/452] 
- [Batch 370/452] 
- [Batch 371/452] 
- [Batch 372/452] 
- [Batch 373/452] 
- [Batch 374/452] 
- [Batch 375/452] 
- [Batch 376/452] 
- [Batch 377/452] 
- [Batch 378/452] 
- [Batch 379/452] 
- [Batch 380/452] 
- [Batch 381/452] 
- [Batch 382/452] 
- [Batch 383/452] 
- [Batch 384/452] 
- [Batch 385/452] 
- [Batch 386/452] 
- [Batch 387/452] 
- [Batch 388/452] 
- [Batch 389/452] 
- [Batch 390/452] 
- [Batch 391/452] 
- [Batch 392/452] 
- [Batch 393/452] 
- [Batch 394/452] 
- [Batch 395/452] 
- [Batch 396/452] 
- [Batch 397/452] 
- [Batch 398/452] 
- [Batch 399/452] 
- [Batch 400/452] 
- [Batch 401/452] 
- [Batch 402/452] 
- [Batch 403/452] 
- [Batch 404/452] 
- [Batch 405/452] 
- [Batch 406/452] 
- [Batch 407/452] 
- [Batch 408/452] 
- [Batch 409/452] 
- [Batch 410/452] 
- [Batch 411/452] 
- [Batch 412/452] 
- [Batch 413/452] 
- [Batch 414/452] 
- [Batch 415/452] 
- [Batch 416/452] 
- [Batch 417/452] 
- [Batch 418/452] 
- [Batch 419/452] 
- [Batch 420/452] 
- [Batch 421/452] 
- [Batch 422/452] 
- [Batch 423/452] 
- [Batch 424/452] 
- [Batch 425/452] 
- [Batch 426/452] 
- [Batch 427/452] 
- [Batch 428/452] 
- [Batch 429/452] 
- [Batch 430/452] 
- [Batch 431/452] 
- [Batch 432/452] 
- [Batch 433/452] 
- [Batch 434/452] 
- [Batch 435/452] 
- [Batch 436/452] 
- [Batch 437/452] 
- [Batch 438/452] 
- [Batch 439/452] 
- [Batch 440/452] 
- [Batch 441/452] 
- [Batch 442/452] 
- [Batch 443/452] 
- [Batch 444/452] 
- [Batch 445/452] 
- [Batch 446/452] 
- [Batch 447/452] 
- [Batch 448/452] 
- [Batch 449/452] 
- [Batch 450/452] 
- [Batch 451/452] 
- [Batch 452/452] 
- [Batch 453/452] 
- [Batch 454/452] 
- [Batch 455/452] 
- [Batch 456/452] 
- [Batch 457/452] 
- [Batch 458/452] 
- [Batch 459/452] 
- [Batch 460/452] 
- [Batch 461/452] 
- [Batch 462/452] 
- [Batch 463/452] 
- [Batch 464/452] 
- [Batch 465/452] 
- [Batch 466/452] 
- [Batch 467/452] 
- [Batch 468/452] 
- [Batch 469/452] 
- [Batch 470/452] 
- [Batch 471/452] 
- [Batch 472/452] 
- [Batch 473/452] 
- [Batch 474/452] 
- [Batch 475/452] 
- [Batch 476/452] 
- [Batch 477/452] 
- [Batch 478/452] 
- [Batch 479/452] 
- [Batch 480/452] 
- [Batch 481/452] 
- [Batch 482/452] 
- [Batch 483/452] 
- [Batch 484/452] 
- [Batch 485/452] 
- [Batch 486/452] 
- [Batch 487/452] 
- [Batch 488/452] 
- [Batch 489/452] 
- [Batch 490/452] 
- [Batch 491/452] 
- [Batch 492/452] 
- [Batch 493/452] 
- [Batch 494/452] 
- [Batch 495/452] 
- [Batch 496/452] 
- [Batch 497/452] 
- [Batch 498/452] 
- [Batch 499/452] 
- [Batch 500/452] 
- [Batch 501/452] 
- [Batch 502/452] 
- [Batch 503/452] 
- [Batch 504/452] 
- [Batch 505/452] 
- [Batch 506/452] 
- [Batch 507/452] 
- [Batch 508/452] 
- [Batch 509/452] 
- [Batch 510/452] 
- [Batch 511/452] 
- [Batch 512/452] 
- [Batch 513/452] 
- [Batch 514/452] 
- [Batch 515/452] 
- [Batch 516/452] 
- [Batch 517/452] 
- [Batch 518/452] 
- [Batch 519/452] 
- [Batch 520/452] 
- [Batch 521/452] 
- [Batch 522/452] 
- [Batch 523/452] 
- [Batch 524/452] 
- [Batch 525/452] 
- [Batch 526/452] 
- [Batch 527/452] 
- [Batch 528/452] 
- [Batch 529/452] 
- [Batch 530/452] 
- [Batch 531/452] 
- [Batch 532/452] 
- [Batch 533/452] 
- [Batch 534/452] 
- [Batch 535/452] 
- [Batch 536/452] 
- [Batch 537/452] 
- [Batch 538/452] 
- [Batch 539/452] 
- [Batch 540/452] 
- [Batch 541/452] 
- [Batch 542/452] 
- [Batch 543/452] 
- [Batch 544/452] 
- [Batch 545/452] 
- [Batch 546/452] 
- [Batch 547/452] 
- [Batch 548/452] 
- [Batch 549/452] 
- [Batch 550/452] 
- [Batch 551/452] 
- [Batch 552/452] 
- [Batch 553/452] 
- [Batch 554/452] 
- [Batch 555/452] 
- [Batch 556/452] 
- [Batch 557/452] 
- [Batch 558/452] 
- [Batch 559/452] 
- [Batch 560/452] 
- [Batch 561/452] 
- [Batch 562/452] 
- [Batch 563/452] 
- [Batch 564/452] 
- [Batch 565/452] 
- [Batch 566/452] 
- [Batch 567/452] 
- [Batch 568/452] 
- [Batch 569/452] 
- [Batch 570/452] 
- [Batch 571/452] 
- [Batch 572/452] 
- [Batch 573/452] 
- [Batch 574/452] 
- [Batch 575/452] 
- [Batch 576/452] 
- [Batch 577/452] 
- [Batch 578/452] 
- [Batch 579/452] 
- [Batch 580/452] 
- [Batch 581/452] 
- [Batch 582/452] 
- [Batch 583/452] 
- [Batch 584/452] 
- [Batch 585/452] 
- [Batch 586/452] 
- [Batch 587/452] 
- [Batch 588/452] 
- [Batch 589/452] 
- [Batch 590/452] 
- [Batch 591/452] 
- [Batch 592/452] 
- [Batch 593/452] 
- [Batch 594/452] 
- [Batch 595/452] 
- [Batch 596/452] 
- [Batch 597/452] 
- [Batch 598/452] 
- [Batch 599/452] 
- [Batch 600/452] 
- [Batch 601/452] 
- [Batch 602/452] 
- [Batch 603/452] 
- [Batch 604/452] 
- [Batch 605/452] 
- [Batch 606/452] 
- [Batch 607/452] 
- [Batch 608/452] 
- [Batch 609/452] 
- [Batch 610/452] 
- [Batch 611/452] 
- [Batch 612/452] 
- [Batch 613/452] 
- [Batch 614/452] 
- [Batch 615/452] 
- [Batch 616/452] 
- [Batch 617/452] 
- [Batch 618/452] 
- [Batch 619/452] 
- [Batch 620/452] 
- [Batch 621/452] 
- [Batch 622/452] 
- [Batch 623/452] 
- [Batch 624/452] 
- [Batch 625/452] 
- [Batch 626/452] 
- [Batch 627/452] 
- [Batch 628/452] 
- [Batch 629/452] 
- [Batch 630/452] 
- [Batch 631/452] 
- [Batch 632/452] 
- [Batch 633/452] 
- [Batch 634/452] 
- [Batch 635/452] 
- [Batch 636/452] 
- [Batch 637/452] 
- [Batch 638/452] 
- [Batch 639/452] 
- [Batch 640/452] 
- [Batch 641/452] 
- [Batch 642/452] 
- [Batch 643/452] 
- [Batch 644/452] 
- [Batch 645/452] 
- [Batch 646/452] 
- [Batch 647/452] 
- [Batch 648/452] 
- [Batch 649/452] 
- [Batch 650/452] 
- [Batch 651/452] 
- [Batch 652/452] 
- [Batch 653/452] 
- [Batch 654/452] 
- [Batch 655/452] 
- [Batch 656/452] 
- [Batch 657/452] 
- [Batch 658/452] 
- [Batch 659/452] 
- [Batch 660/452] 
- [Batch 661/452] 
- [Batch 662/452] 
- [Batch 663/452] 
- [Batch 664/452] 
- [Batch 665/452] 
- [Batch 666/452] 
- [Batch 667/452] 
- [Batch 668/452] 
- [Batch 669/452] 
- [Batch 670/452] 
- [Batch 671/452] 
- [Batch 672/452] 
- [Batch 673/452] 
- [Batch 674/452] 
- [Batch 675/452] 
- [Batch 676/452] 
- [Batch 677/452] 
- [Batch 678/452] 
- [Batch 679/452] 
- [Batch 680/452] 
- [Batch 681/452] 
- [Batch 682/452] 
- [Batch 683/452] 
- [Batch 684/452] 
- [Batch 685/452] 
- [Batch 686/452] 
- [Batch 687/452] 
- [Batch 688/452] 
- [Batch 689/452] 
- [Batch 690/452] 
- [Batch 691/452] 
- [Batch 692/452] 
- [Batch 693/452] 
- [Batch 694/452] 
- [Batch 695/452] 
- [Batch 696/452] 
- [Batch 697/452] 
- [Batch 698/452] 
- [Batch 699/452] 
- [Batch 700/452] 
- [Batch 701/452] 
- [Batch 702/452] 
- [Batch 703/452] 
- [Batch 704/452] 
- [Batch 705/452] 
- [Batch 706/452] 
- [Batch 707/452] 
- [Batch 708/452] 
- [Batch 709/452] 
- [Batch 710/452] 
- [Batch 711/452] 
- [Batch 712/452] 
- [Batch 713/452] 
- [Batch 714/452] 
- [Batch 715/452] 
- [Batch 716/452] 
- [Batch 717/452] 
- [Batch 718/452] 
- [Batch 719/452] 
- [Batch 720/452] 
- [Batch 721/452] 
- [Batch 722/452] 
- [Batch 723/452] 
- [Batch 724/452] 
- [Batch 725/452] 
- [Batch 726/452] 
- [Batch 727/452] 
- [Batch 728/452] 
- [Batch 729/452] 
- [Batch 730/452] 
- [Batch 731/452] 
- [Batch 732/452] 
- [Batch 733/452] 
- [Batch 734/452] 
- [Batch 735/452] 
- [Batch 736/452] 
- [Batch 737/452] 
- [Batch 738/452] 
- [Batch 739/452] 
- [Batch 740/452] 
- [Batch 741/452] 
- [Batch 742/452] 
- [Batch 743/452] 
- [Batch 744/452] 
- [Batch 745/452] 
- [Batch 746/452] 
- [Batch 747/452] 
- [Batch 748/452] 
- [Batch 749/452] 
- [Batch 750/452] 
- [Batch 751/452] 
- [Batch 752/452] 
- [Batch 753/452] 
- [Batch 754/452] 
- [Batch 755/452] 
- [Batch 756/452] 
- [Batch 757/452] 
- [Batch 758/452] 
- [Batch 759/452] 
- [Batch 760/452] 
- [Batch 761/452] 
- [Batch 762/452] 
- [Batch 763/452] 
- [Batch 764/452] 
- [Batch 765/452] 
- [Batch 766/452] 
- [Batch 767/452] 
- [Batch 768/452] 
- [Batch 769/452] 
- [Batch 770/452] 
- [Batch 771/452] 
- [Batch 772/452] 
- [Batch 773/452] 
- [Batch 774/452] 
- [Batch 775/452] 
- [Batch 776/452] 
- [Batch 777/452] 
- [Batch 778/452] 
- [Batch 779/452] 
- [Batch 780/452] 
- [Batch 781/452] 
- [Batch 782/452] 
- [Batch 783/452] 
- [Batch 784/452] 
- [Batch 785/452] 
- [Batch 786/452] 
- [Batch 787/452] 
- [Batch 788/452] 
- [Batch 789/452] 
- [Batch 790/452] 
- [Batch 791/452] 
- [Batch 792/452] 
- [Batch 793/452] 
- [Batch 794/452] 
- [Batch 795/452] 
- [Batch 796/452] 
- [Batch 797/452] 
- [Batch 798/452] 
- [Batch 799/452] 
- [Batch 800/452] 
- [Batch 801/452] 
- [Batch 802/452] 
- [Batch 803/452] 
- [Batch 804/452] 
- [Batch 805/452] 
- [Batch 806/452] 
- [Batch 807/452] 
- [Batch 808/452] 
- [Batch 809/452] 
- [Batch 810/452] 
- [Batch 811/452] 
- [Batch 812/452] 
- [Batch 813/452] 
- [Batch 814/452] 
- [Batch 815/452] 
- [Batch 816/452] 
- [Batch 817/452] 
- [Batch 818/452] 
- [Batch 819/452] 
- [Batch 820/452] 
- [Batch 821/452] 
- [Batch 822/452] 
- [Batch 823/452] 
- [Batch 824/452] 
- [Batch 825/452] 
- [Batch 826/452] 
- [Batch 827/452] 
- [Batch 828/452] 
- [Batch 829/452] 
- [Batch 830/452] 
- [Batch 831/452] 
- [Batch 832/452] 
- [Batch 833/452] 
- [Batch 834/452] 
- [Batch 835/452] 
- [Batch 836/452] 
- [Batch 837/452] 
- [Batch 838/452] 
- [Batch 839/452] 
- [Batch 840/452] 
- [Batch 841/452] 
- [Batch 842/452] 
- [Batch 843/452] 
- [Batch 844/452] 
- [Batch 845/452] 
- [Batch 846/452] 
- [Batch 847/452] 
- [Batch 848/452] 
- [Batch 849/452] 
- [Batch 850/452] 
- [Batch 851/452] 
- [Batch 852/452] 
- [Batch 853/452] 
- [Batch 854/452] 
- [Batch 855/452] 
- [Batch 856/452] 
- [Batch 857/452] 
- [Batch 858/452] 
- [Batch 859/452] 
- [Batch 860/452] 
- [Batch 861/452] 
- [Batch 862/452] 
- [Batch 863/452] 
- [Batch 864/452] 
- [Batch 865/452] 
- [Batch 866/452] 
- [Batch 867/452] 
- [Batch 868/452] 
- [Batch 869/452] 
- [Batch 870/452] 
- [Batch 871/452] 
- [Batch 872/452] 
- [Batch 873/452] 
- [Batch 874/452] 
- [Batch 875/452] 
- [Batch 876/452] 
- [Batch 877/452] 
- [Batch 878/452] 
- [Batch 879/452] 
- [Batch 880/452] 
- [Batch 881/452] 
- [Batch 882/452] 
- [Batch 883/452] 
- [Batch 884/452] 
- [Batch 885/452] 
- [Batch 886/452] 
- [Batch 887/452] 
- [Batch 888/452] 
- [Batch 889/452] 
- [Batch 890/452] 
- [Batch 891/452] 
- [Batch 892/452] 
- [Batch 893/452] 
- [Batch 894/452] 
- [Batch 895/452] 
- [Batch 896/452] 
- [Batch 897/452] 
- [Batch 898/452] 
- [Batch 899/452] 
- [Batch 900/452] 
- [Batch 901/452] 
- [Batch 902/452] 
- [Batch 903/452] 
- [Batch 904/452] 
- [Batch 905/452] 
- [Batch 906/452] 
- [Batch 907/452] 
- [Batch 908/452] 
- [Batch 909/452] 
- [Batch 910/452] 
- [Batch 911/452] 
- [Batch 912/452] 
- [Batch 913/452] 
- [Batch 914/452] 
- [Batch 915/452] 
- [Batch 916/452] 
- [Batch 917/452] 
- [Batch 918/452] 
- [Batch 919/452] 
- [Batch 920/452] 
- [Batch 921/452] 
- [Batch 922/452] 
- [Batch 923/452] 
- [Batch 924/452] 
- [Batch 925/452] 
- [Batch 926/452] 
- [Batch 927/452] 
- [Batch 928/452] 
- [Batch 929/452] 
- [Batch 930/452] 
- [Batch 931/452] 
- [Batch 932/452] 
- [Batch 933/452] 
- [Batch 934/452] 
- [Batch 935/452] 
- [Batch 936/452] 
- [Batch 937/452] 
- [Batch 938/452] 
- [Batch 939/452] 
- [Batch 940/452] 
- [Batch 941/452] 
- [Batch 942/452] 
- [Batch 943/452] 
- [Batch 944/452] 
- [Batch 945/452] 
- [Batch 946/452] 
- [Batch 947/452] 
- [Batch 948/452] 
- [Batch 949/452] 
- [Batch 950/452] 
- [Batch 951/452] 
- [Batch 952/452] 
- [Batch 953/452] 
- [Batch 954/452] 
- [Batch 955/452] 
- [Batch 956/452] 
- [Batch 957/452] 
- [Batch 958/452] 
- [Batch 959/452] 
- [Batch 960/452] 
- [Batch 961/452] 
- [Batch 962/452] 
- [Batch 963/452] 
- [Batch 964/452] 
- [Batch 965/452] 
- [Batch 966/452] 
- [Batch 967/452] 
- [Batch 968/452] 
- [Batch 969/452] 
- [Batch 970/452] 
- [Batch 971/452] 
- [Batch 972/452] 
- [Batch 973/452] 
- [Batch 974/452] 
- [Batch 975/452] 
- [Batch 976/452] 
- [Batch 977/452] 
- [Batch 978/452] 
- [Batch 979/452] 
- [Batch 980/452] 
- [Batch 981/452] 
- [Batch 982/452] 
- [Batch 983/452] 
- [Batch 984/452] 
- [Batch 985/452] 
- [Batch 986/452] 
- [Batch 987/452] 
- [Batch 988/452] 
- [Batch 989/452] 
- [Batch 990/452] 
- [Batch 991/452] 
- [Batch 992/452] 
- [Batch 993/452] 
- [Batch 994/452] 
- [Batch 995/452] 
- [Batch 996/452] 
- [Batch 997/452] 
- [Batch 998/452] 
- [Batch 999/452] 
- [Batch 1000/452] 
- [Batch 1001/452] 
- [Batch 1002/452] 
- [Batch 1003/452] 
- [Batch 1004/452] 
- [Batch 1005/452] 
- [Batch 1006/452] 
- [Batch 1007/452] 
- [Batch 1008/452] 
- [Batch 1009/452] 
- [Batch 1010/452] 
- [Batch 1011/452] 
- [Batch 1012/452] 
- [Batch 1013/452] 
- [Batch 1014/452] 
- [Batch 1015/452] 
- [Batch 1016/452] 
- [Batch 1017/452] 
- [Batch 1018/452] 
- [Batch 1019/452] 
- [Batch 1020/452] 
- [Batch 1021/452] 
- [Batch 1022/452] 
- [Batch 1023/452] 
- [Batch 1024/452] 
- [Batch 1025/452] 
- [Batch 1026/452] 
- [Batch 1027/452] 
- [Batch 1028/452] 
- [Batch 1029/452] 
- [Batch 1030/452] 
- [Batch 1031/452] 
- [Batch 1032/452] 
- [Batch 1033/452] 
- [Batch 1034/452] 
- [Batch 1035/452] 
- [Batch 1036/452] 
- [Batch 1037/452] 
- [Batch 1038/452] 
- [Batch 1039/452] 
- [Batch 1040/452] 
- [Batch 1041/452] 
- [Batch 1042/452] 
- [Batch 1043/452] 
- [Batch 1044/452] 
- [Batch 1045/452] 
- [Batch 1046/452] 
- [Batch 1047/452] 
- [Batch 1048/452] 
- [Batch 1049/452] 
- [Batch 1050/452] 
- [Batch 1051/452] 
- [Batch 1052/452] 
- [Batch 1053/452] 
- [Batch 1054/452] 
- [Batch 1055/452] 
- [Batch 1056/452] 
- [Batch 1057/452] 
- [Batch 1058/452] 
- [Batch 1059/452] 
- [Batch 1060/452] 
- [Batch 1061/452] 
- [Batch 1062/452] 
- [Batch 1063/452] 
- [Batch 1064/452] 
- [Batch 1065/452] 
- [Batch 1066/452] 
- [Batch 1067/452] 
- [Batch 1068/452] 
- [Batch 1069/452] 
- [Batch 1070/452] 
- [Batch 1071/452] 
- [Batch 1072/452] 
- [Batch 1073/452] 
- [Batch 1074/452] 
- [Batch 1075/452] 
- [Batch 1076/452] 
- [Batch 1077/452] 
- [Batch 1078/452] 
- [Batch 1079/452] 
- [Batch 1080/452] 
- [Batch 1081/452] 
- [Batch 1082/452] 
- [Batch 1083/452] 
- [Batch 1084/452] 
- [Batch 1085/452] 
- [Batch 1086/452] 
- [Batch 1087/452] 
- [Batch 1088/452] 
- [Batch 1089/452] 
- [Batch 1090/452] 
- [Batch 1091/452] 
- [Batch 1092/452] 
- [Batch 1093/452] 
- [Batch 1094/452] 
- [Batch 1095/452] 
- [Batch 1096/452] 
- [Batch 1097/452] 
- [Batch 1098/452] 
- [Batch 1099/452] 
- [Batch 1100/452] 
- [Batch 1101/452] 
- [Batch 1102/452] 
- [Batch 1103/452] 
- [Batch 1104/452] 
- [Batch 1105/452] 
- [Batch 1106/452] 
- [Batch 1107/452] 
- [Batch 1108/452] 
- [Batch 1109/452] 
- [Batch 1110/452] 
- [Batch 1111/452] 
- [Batch 1112/452] 
- [Batch 1113/452] 
- [Batch 1114/452] 
- [Batch 1115/452] 
- [Batch 1116/452] 
- [Batch 1117/452] 
- [Batch 1118/452] 
- [Batch 1119/452] 
- [Batch 1120/452] 
- [Batch 1121/452] 
- [Batch 1122/452] 
- [Batch 1123/452] 
- [Batch 1124/452] 
- [Batch 1125/452] 
- [Batch 1126/452] 
- [Batch 1127/452] 
- [Batch 1128/452] 
- [Batch 1129/452] 
- [Batch 1130/452] 
- [Batch 1131/452] 
- [Batch 1132/452] 
- [Batch 1133/452] 
- [Batch 1134/452] 
- [Batch 1135/452] 
- [Batch 1136/452] 
- [Batch 1137/452] 
- [Batch 1138/452] 
- [Batch 1139/452] 
- [Batch 1140/452] 
- [Batch 1141/452] 
- [Batch 1142/452] 
- [Batch 1143/452] 
- [Batch 1144/452] 
- [Batch 1145/452] 
- [Batch 1146/452] 
- [Batch 1147/452] 
- [Batch 1148/452] 
- [Batch 1149/452] 
- [Batch 1150/452] 
- [Batch 1151/452] 
- [Batch 1152/452] 
- [Batch 1153/452] 
- [Batch 1154/452] 
- [Batch 1155/452] 
- [Batch 1156/452] 
- [Batch 1157/452] 
- [Batch 1158/452] 
- [Batch 1159/452] 
- [Batch 1160/452] 
- [Batch 1161/452] 
- [Batch 1162/452] 
- [Batch 1163/452] 
- [Batch 1164/452] 
- [Batch 1165/452] 
- [Batch 1166/452] 
- [Batch 1167/452] 
- [Batch 1168/452] 
- [Batch 1169/452] 
- [Batch 1170/452] 
- [Batch 1171/452] 
- [Batch 1172/452] 
- [Batch 1173/452] 
- [Batch 1174/452] 
- [Batch 1175/452] 
- [Batch 1176/452] 
- [Batch 1177/452] 
- [Batch 1178/452] 
- [Batch 1179/452] 
- [Batch 1180/452] 
- [Batch 1181/452] 
- [Batch 1182/452] 
- [Batch 1183/452] 
- [Batch 1184/452] 
- [Batch 1185/452] 
- [Batch 1186/452] 
- [Batch 1187/452] 
- [Batch 1188/452] 
- [Batch 1189/452] 
- [Batch 1190/452] 
- [Batch 1191/452] 
- [Batch 1192/452] 
- [Batch 1193/452] 
- [Batch 1194/452] 
- [Batch 1195/452] 
- [Batch 1196/452] 
- [Batch 1197/452] 
- [Batch 1198/452] 
- [Batch 1199/452] 
- [Batch 1200/452] 
- [Batch 1201/452] 
- [Batch 1202/452] 
- [Batch 1203/452] 
- [Batch 1204/452] 
- [Batch 1205/452] 
- [Batch 1206/452] 
- [Batch 1207/452] 
- [Batch 1208/452] 
- [Batch 1209/452] 
- [Batch 1210/452] 
- [Batch 1211/452] 
- [Batch 1212/452] 
- [Batch 1213/452] 
- [Batch 1214/452] 
- [Batch 1215/452] 
- [Batch 1216/452] 
- [Batch 1217/452] 
- [Batch 1218/452] 
- [Batch 1219/452] 
- [Batch 1220/452] 
- [Batch 1221/452] 
- [Batch 1222/452] 
- [Batch 1223/452] 
- [Batch 1224/452] 
- [Batch 1225/452] 
- [Batch 1226/452] 
- [Batch 1227/452] 
- [Batch 1228/452] 
- [Batch 1229/452] 
- [Batch 1230/452] 
- [Batch 1231/452] 
- [Batch 1232/452] 
- [Batch 1233/452] 
- [Batch 1234/452] 
- [Batch 1235/452] 
- [Batch 1236/452] 
- [Batch 1237/452] 
- [Batch 1238/452] 
- [Batch 1239/452] 
- [Batch 1240/452] 
- [Batch 1241/452] 
- [Batch 1242/452] 
- [Batch 1243/452] 
- [Batch 1244/452] 
- [Batch 1245/452] 
- [Batch 1246/452] 
- [Batch 1247/452] 
- [Batch 1248/452] 
- [Batch 1249/452] 
- [Batch 1250/452] 
- [Batch 1251/452] 
- [Batch 1252/452] 
- [Batch 1253/452] 
- [Batch 1254/452] 
- [Batch 1255/452] 
- [Batch 1256/452] 
- [Batch 1257/452] 
- [Batch 1258/452] 
- [Batch 1259/452] 
- [Batch 1260/452] 
- [Batch 1261/452] 
- [Batch 1262/452] 
- [Batch 1263/452] 
- [Batch 1264/452] 
- [Batch 1265/452] 
- [Batch 1266/452] 
- [Batch 1267/452] 
- [Batch 1268/452] 
- [Batch 1269/452] 
- [Batch 1270/452] 
- [Batch 1271/452] 
- [Batch 1272/452] 
- [Batch 1273/452] 
- [Batch 1274/452] 
- [Batch 1275/452] 
- [Batch 1276/452] 
- [Batch 1277/452] 
- [Batch 1278/452] 
- [Batch 1279/452] 
- [Batch 1280/452] 
- [Batch 1281/452] 
- [Batch 1282/452] 
- [Batch 1283/452] 
- [Batch 1284/452] 
- [Batch 1285/452] 
- [Batch 1286/452] 
- [Batch 1287/452] 
- [Batch 1288/452] 
- [Batch 1289/452] 
- [Batch 1290/452] 
- [Batch 1291/452] 
- [Batch 1292/452] 
- [Batch 1293/452] 
- [Batch 1294/452] 
- [Batch 1295/452] 
- [Batch 1296/452] 
- [Batch 1297/452] 
- [Batch 1298/452] 
- [Batch 1299/452] 
- [Batch 1300/452] 
- [Batch 1301/452] 
- [Batch 1302/452] 
- [Batch 1303/452] 
- [Batch 1304/452] 
- [Batch 1305/452] 
- [Batch 1306/452] 
- [Batch 1307/452] 
- [Batch 1308/452] 
- [Batch 1309/452] 
- [Batch 1310/452] 
- [Batch 1311/452] 
- [Batch 1312/452] 
- [Batch 1313/452] 
- [Batch 1314/452] 
- [Batch 1315/452] 
- [Batch 1316/452] 
- [Batch 1317/452] 
- [Batch 1318/452] 
- [Batch 1319/452] 
- [Batch 1320/452] 
- [Batch 1321/452] 
- [Batch 1322/452] 
- [Batch 1323/452] 
- [Batch 1324/452] 
- [Batch 1325/452] 
- [Batch 1326/452] 
- [Batch 1327/452] 
- [Batch 1328/452] 
- [Batch 1329/452] 
- [Batch 1330/452] 
- [Batch 1331/452] 
- [Batch 1332/452] 
- [Batch 1333/452] 
- [Batch 1334/452] 
- [Batch 1335/452] 
- [Batch 1336/452] 
- [Batch 1337/452] 
- [Batch 1338/452] 
- [Batch 1339/452] 
- [Batch 1340/452] 
- [Batch 1341/452] 
- [Batch 1342/452] 
- [Batch 1343/452] 
- [Batch 1344/452] 
- [Batch 1345/452] 
- [Batch 1346/452] 
- [Batch 1347/452] 
- [Batch 1348/452] 
- [Batch 1349/452] 
- [Batch 1350/452] 
- [Batch 1351/452] 
- [Batch 1352/452] 
- [Batch 1353/452] 
- [Batch 1354/452] 
- [Batch 1355/452] 
- [Batch 1356/452] 
- [Batch 1357/452] 
- [Batch 1358/452] 
- [Batch 1359/452] 
- [Batch 1360/452] 
- [Batch 1361/452] 
- [Batch 1362/452] 
- [Batch 1363/452] 
- [Batch 1364/452] 
- [Batch 1365/452] 
- [Batch 1366/452] 
- [Batch 1367/452] 
- [Batch 1368/452] 
- [Batch 1369/452] 
- [Batch 1370/452] 
- [Batch 1371/452] 
- [Batch 1372/452] 
- [Batch 1373/452] 
- [Batch 1374/452] 
- [Batch 1375/452] 
- [Batch 1376/452] 
- [Batch 1377/452] 
- [Batch 1378/452] 
- [Batch 1379/452] 
- [Batch 1380/452] 
- [Batch 1381/452] 
- [Batch 1382/452] 
- [Batch 1383/452] 
- [Batch 1384/452] 
- [Batch 1385/452] 
- [Batch 1386/452] 
- [Batch 1387/452] 
- [Batch 1388/452] 
- [Batch 1389/452] 
- [Batch 1390/452] 
- [Batch 1391/452] 
- [Batch 1392/452] 
- [Batch 1393/452] 
-#####  val
- [Batch 0/452] 
- [Batch 1/452] 
- [Batch 2/452] 
- [Batch 3/452] 
- [Batch 4/452] 
- [Batch 5/452] 
- [Batch 6/452] 
- [Batch 7/452] 
- [Batch 8/452] 
- [Batch 9/452] 
- [Batch 10/452] 
- [Batch 11/452] 
- [Batch 12/452] 
- [Batch 13/452] 
- [Batch 14/452] 
- [Batch 15/452] 
- [Batch 16/452] 
- [Batch 17/452] 
- [Batch 18/452] 
- [Batch 19/452] 
- [Batch 20/452] 
- [Batch 21/452] 
- [Batch 22/452] 
- [Batch 23/452] 
- [Batch 24/452] 
- [Batch 25/452] 
- [Batch 26/452] 
- [Batch 27/452] 
- [Batch 28/452] 
- [Batch 29/452] 
- [Batch 30/452] 
- [Batch 31/452] 
- [Batch 32/452] 
- [Batch 33/452] 
- [Batch 34/452] 
- [Batch 35/452] 
- [Batch 36/452] 
- [Batch 37/452] 
- [Batch 38/452] 
- [Batch 39/452] 
- [Batch 40/452] 
- [Batch 41/452] 
- [Batch 42/452] 
- [Batch 43/452] 
- [Batch 44/452] 
- [Batch 45/452] 
- [Batch 46/452] 
- [Batch 47/452] 
- [Batch 48/452] 
- [Batch 49/452] 
- [Batch 50/452] 
- [Batch 51/452] 
- [Batch 52/452] 
- [Batch 53/452] 
- [Batch 54/452] 
- [Batch 55/452] 
- [Batch 56/452] 
- [Batch 57/452] 
- [Batch 58/452] 
- [Batch 59/452] 
- [Batch 60/452] 
- [Batch 61/452] 
- [Batch 62/452] 
- [Batch 63/452] 
- [Batch 64/452] 
- [Batch 65/452] 
- [Batch 66/452] 
- [Batch 67/452] 
- [Batch 68/452] 
- [Batch 69/452] 
- [Batch 70/452] 
- [Batch 71/452] 
- [Batch 72/452] 
- [Batch 73/452] 
- [Batch 74/452] 
- [Batch 75/452] 
- [Batch 76/452] 
- [Batch 77/452] 
- [Batch 78/452] 
- [Batch 79/452] 
- [Batch 80/452] 
- [Batch 81/452] 
- [Batch 82/452] 
- [Batch 83/452] 
- [Batch 84/452] 
- [Batch 85/452] 
- [Batch 86/452] 
- [Batch 87/452] 
- [Batch 88/452] 
- [Batch 89/452] 
- [Batch 90/452] 
- [Batch 91/452] 
- [Batch 92/452] 
- [Batch 93/452] 
- [Batch 94/452] 
- [Batch 95/452] 
- [Batch 96/452] 
- [Batch 97/452] 
- [Batch 98/452] 
- [Batch 99/452] 
- [Batch 100/452] 
- [Batch 101/452] 
- [Batch 102/452] 
- [Batch 103/452] 
- [Batch 104/452] 
- [Batch 105/452] 
- [Batch 106/452] 
- [Batch 107/452] 
- [Batch 108/452] 
- [Batch 109/452] 
- [Batch 110/452] 
- [Batch 111/452] 
- [Batch 112/452] 
- [Batch 113/452] 
- [Batch 114/452] 
- [Batch 115/452] 
- [Batch 116/452] 
- [Batch 117/452] 
- [Batch 118/452] 
- [Batch 119/452] 
- [Batch 120/452] 
- [Batch 121/452] 
- [Batch 122/452] 
- [Batch 123/452] 
- [Batch 124/452] 
- [Batch 125/452] 
- [Batch 126/452] 
- [Batch 127/452] 
- [Batch 128/452] 
- [Batch 129/452] 
- [Batch 130/452] 
- [Batch 131/452] 
- [Batch 132/452] 
- [Batch 133/452] 
- [Batch 134/452] 
- [Batch 135/452] 
- [Batch 136/452] 
- [Batch 137/452] 
- [Batch 138/452] 
- [Batch 139/452] 
- [Batch 140/452] 
- [Batch 141/452] 
- [Batch 142/452] 
- [Batch 143/452] 
- [Batch 144/452] 
- [Batch 145/452] 
- [Batch 146/452] 
- [Batch 147/452] 
- [Batch 148/452] 
- [Batch 149/452] 
- [Batch 150/452] 
- [Batch 151/452] 
- [Batch 152/452] 
- [Batch 153/452] 
- [Batch 154/452] 
- [Batch 155/452] 
- [Batch 156/452] 
- [Batch 157/452] 
- [Batch 158/452] 
- [Batch 159/452] 
- [Batch 160/452] 
- [Batch 161/452] 
- [Batch 162/452] 
- [Batch 163/452] 
- [Batch 164/452] 
- [Batch 165/452] 
- [Batch 166/452] 
- [Batch 167/452] 
- [Batch 168/452] 
- [Batch 169/452] 
- [Batch 170/452] 
- [Batch 171/452] 
- [Batch 172/452] 
- [Batch 173/452] 
- [Batch 174/452] 
- [Batch 175/452] 
- [Batch 176/452] 
- [Batch 177/452] 
- [Batch 178/452] 
- [Batch 179/452] 
- [Batch 180/452] 
- [Batch 181/452] 
- [Batch 182/452] 
- [Batch 183/452] 
- [Batch 184/452] 
- [Batch 185/452] 
- [Batch 186/452] 
- [Batch 187/452] 
- [Batch 188/452] 
- [Batch 189/452] 
- [Batch 190/452] 
- [Batch 191/452] 
- [Batch 192/452] 
- [Batch 193/452] 
- [Batch 194/452] 
- [Batch 195/452] 
- [Batch 196/452] 
- [Batch 197/452] 
- [Batch 198/452] 
- [Batch 199/452] 
- [Batch 200/452] 
- [Batch 201/452] 
- [Batch 202/452] 
- [Batch 203/452] 
- [Batch 204/452] 
- [Batch 205/452] 
- [Batch 206/452] 
- [Batch 207/452] 
- [Batch 208/452] 
- [Batch 209/452] 
- [Batch 210/452] 
- [Batch 211/452] 
- [Batch 212/452] 
- [Batch 213/452] 
- [Batch 214/452] 
- [Batch 215/452] 
- [Batch 216/452] 
- [Batch 217/452] 
- [Batch 218/452] 
- [Batch 219/452] 
- [Batch 220/452] 
- [Batch 221/452] 
- [Batch 222/452] 
- [Batch 223/452] 
- [Batch 224/452] 
- [Batch 225/452] 
- [Batch 226/452] 
- [Batch 227/452] 
- [Batch 228/452] 
- [Batch 229/452] 
- [Batch 230/452] 
- [Batch 231/452] 
- [Batch 232/452] 
- [Batch 233/452] 
- [Batch 234/452] 
- [Batch 235/452] 
- [Batch 236/452] 
- [Batch 237/452] 
- [Batch 238/452] 
- [Batch 239/452] 
- [Batch 240/452] 
- [Batch 241/452] 
- [Batch 242/452] 
- [Batch 243/452] 
- [Batch 244/452] 
- [Batch 245/452] 
- [Batch 246/452] 
- [Batch 247/452] 
- [Batch 248/452] 
- [Batch 249/452] 
- [Batch 250/452] 
- [Batch 251/452] 
- [Batch 252/452] 
- [Batch 253/452] 
- [Batch 254/452] 
- [Batch 255/452] 
- [Batch 256/452] 
- [Batch 257/452] 
- [Batch 258/452] 
- [Batch 259/452] 
- [Batch 260/452] 
- [Batch 261/452] 
- [Batch 262/452] 
- [Batch 263/452] 
- [Batch 264/452] 
- [Batch 265/452] 
- [Batch 266/452] 
- [Batch 267/452] 
- [Batch 268/452] 
- [Batch 269/452] 
- [Batch 270/452] 
- [Batch 271/452] 
- [Batch 272/452] 
- [Batch 273/452] 
- [Batch 274/452] 
- [Batch 275/452] 
- [Batch 276/452] 
- [Batch 277/452] 
- [Batch 278/452] 
- [Batch 279/452] 
- [Batch 280/452] 
- [Batch 281/452] 
- [Batch 282/452] 
- [Batch 283/452] 
- [Batch 284/452] 
- [Batch 285/452] 
- [Batch 286/452] 
- [Batch 287/452] 
- [Batch 288/452] 
- [Batch 289/452] 
- [Batch 290/452] 
- [Batch 291/452] 
- [Batch 292/452] 
- [Batch 293/452] 
- [Batch 294/452] 
- [Batch 295/452] 
- [Batch 296/452] 
- [Batch 297/452] 
- [Batch 298/452] 
- [Batch 299/452] 
- [Batch 300/452] 
- [Batch 301/452] 
- [Batch 302/452] 
- [Batch 303/452] 
- [Batch 304/452] 
- [Batch 305/452] 
- [Batch 306/452] 
- [Batch 307/452] 
- [Batch 308/452] 
- [Batch 309/452] 
- [Batch 310/452] 
- [Batch 311/452] 
- [Batch 312/452] 
- [Batch 313/452] 
- [Batch 314/452] 
- [Batch 315/452] 
- [Batch 316/452] 
- [Batch 317/452] 
- [Batch 318/452] 
- [Batch 319/452] 
- [Batch 320/452] 
- [Batch 321/452] 
- [Batch 322/452] 
- [Batch 323/452] 
- [Batch 324/452] 
- [Batch 325/452] 
- [Batch 326/452] 
- [Batch 327/452] 
- [Batch 328/452] 
- [Batch 329/452] 
- [Batch 330/452] 
- [Batch 331/452] 
- [Batch 332/452] 
- [Batch 333/452] 
- [Batch 334/452] 
- [Batch 335/452] 
- [Batch 336/452] 
- [Batch 337/452] 
- [Batch 338/452] 
- [Batch 339/452] 
- [Batch 340/452] 
- [Batch 341/452] 
- [Batch 342/452] 
- [Batch 343/452] 
- [Batch 344/452] 
- [Batch 345/452] 
- [Batch 346/452] 
- [Batch 347/452] 
- [Batch 348/452] 
- [Batch 349/452] 
- [Batch 350/452] 
- [Batch 351/452] 
- [Batch 352/452] 
- [Batch 353/452] 
- [Batch 354/452] 
- [Batch 355/452] 
- [Batch 356/452] 
- [Batch 357/452] 
- [Batch 358/452] 
- [Batch 359/452] 
- [Batch 360/452] 
- [Batch 361/452] 
- [Batch 362/452] 
- [Batch 363/452] 
- [Batch 364/452] 
- [Batch 365/452] 
- [Batch 366/452] 
- [Batch 367/452] 
- [Batch 368/452] 
- [Batch 369/452] 
- [Batch 370/452] 
- [Batch 371/452] 
- [Batch 372/452] 
- [Batch 373/452] 
- [Batch 374/452] 
- [Batch 375/452] 
- [Batch 376/452] 
- [Batch 377/452] 
- [Batch 378/452] 
- [Batch 379/452] 
- [Batch 380/452] 
- [Batch 381/452] 
- [Batch 382/452] 
- [Batch 383/452] 
- [Batch 384/452] 
- [Batch 385/452] 
- [Batch 386/452] 
- [Batch 387/452] 
- [Batch 388/452] 
- [Batch 389/452] 
- [Batch 390/452] 
- [Batch 391/452] 
- [Batch 392/452] 
- [Batch 393/452] 
- [Batch 394/452] 
- [Batch 395/452] 
- [Batch 396/452] 
- [Batch 397/452] 
- [Batch 398/452] 
- [Batch 399/452] 
- [Batch 400/452] 
- [Batch 401/452] 
- [Batch 402/452] 
- [Batch 403/452] 
- [Batch 404/452] 
- [Batch 405/452] 
- [Batch 406/452] 
- [Batch 407/452] 
- [Batch 408/452] 
- [Batch 409/452] 
- [Batch 410/452] 
- [Batch 411/452] 
- [Batch 412/452] 
- [Batch 413/452] 
- [Batch 414/452] 
- [Batch 415/452] 
- [Batch 416/452] 
- [Batch 417/452] 
- [Batch 418/452] 
- [Batch 419/452] 
- [Batch 420/452] 
- [Batch 421/452] 
- [Batch 422/452] 
- [Batch 423/452] 
- [Batch 424/452] 
- [Batch 425/452] 
- [Batch 426/452] 
- [Batch 427/452] 
- [Batch 428/452] 
- [Batch 429/452] 
- [Batch 430/452] 
- [Batch 431/452] 
- [Batch 432/452] 
- [Batch 433/452] 
- [Batch 434/452] 
- [Batch 435/452] 
- [Batch 436/452] 
- [Batch 437/452] 
- [Batch 438/452] 
- [Batch 439/452] 
- [Batch 440/452] 
- [Batch 441/452] 
- [Batch 442/452] 
- [Batch 443/452] 
- [Batch 444/452] 
- [Batch 445/452] 
- [Batch 446/452] 
- [Batch 447/452] 
- [Batch 448/452] 
- [Batch 449/452] 
- [Batch 450/452] 
- [Batch 451/452] 
- [Batch 452/452] 
- [Batch 453/452] 
- [Batch 454/452] 
- [Batch 455/452] 
-#####  test
- [Batch 0/452] 
- [Batch 1/452] 
- [Batch 2/452] 
- [Batch 3/452] 
- [Batch 4/452] 
- [Batch 5/452] 
- [Batch 6/452] 
- [Batch 7/452] 
- [Batch 8/452] 
- [Batch 9/452] 
- [Batch 10/452] 
- [Batch 11/452] 
- [Batch 12/452] 
- [Batch 13/452] 
- [Batch 14/452] 
- [Batch 15/452] 
- [Batch 16/452] 
- [Batch 17/452] 
- [Batch 18/452] 
- [Batch 19/452] 
- [Batch 20/452] 
- [Batch 21/452] 
- [Batch 22/452] 
- [Batch 23/452] 
- [Batch 24/452] 
- [Batch 25/452] 
- [Batch 26/452] 
- [Batch 27/452] 
- [Batch 28/452] 
- [Batch 29/452] 
- [Batch 30/452] 
- [Batch 31/452] 
- [Batch 32/452] 
- [Batch 33/452] 
- [Batch 34/452] 
- [Batch 35/452] 
- [Batch 36/452] 
- [Batch 37/452] 
- [Batch 38/452] 
- [Batch 39/452] 
- [Batch 40/452] 
- [Batch 41/452] 
- [Batch 42/452] 
- [Batch 43/452] 
- [Batch 44/452] 
- [Batch 45/452] 
- [Batch 46/452] 
- [Batch 47/452] 
- [Batch 48/452] 
- [Batch 49/452] 
- [Batch 50/452] 
- [Batch 51/452] 
- [Batch 52/452] 
- [Batch 53/452] 
- [Batch 54/452] 
- [Batch 55/452] 
- [Batch 56/452] 
- [Batch 57/452] 
- [Batch 58/452] 
- [Batch 59/452] 
- [Batch 60/452] 
- [Batch 61/452] 
- [Batch 62/452] 
- [Batch 63/452] 
- [Batch 64/452] 
- [Batch 65/452] 
- [Batch 66/452] 
- [Batch 67/452] 
- [Batch 68/452] 
- [Batch 69/452] 
- [Batch 70/452] 
- [Batch 71/452] 
- [Batch 72/452] 
- [Batch 73/452] 
- [Batch 74/452] 
- [Batch 75/452] 
- [Batch 76/452] 
- [Batch 77/452] 
- [Batch 78/452] 
- [Batch 79/452] 
- [Batch 80/452] 
- [Batch 81/452] 
- [Batch 82/452] 
- [Batch 83/452] 
- [Batch 84/452] 
- [Batch 85/452] 
- [Batch 86/452] 
- [Batch 87/452] 
- [Batch 88/452] 
- [Batch 89/452] 
- [Batch 90/452] 
- [Batch 91/452] 
- [Batch 92/452] 
- [Batch 93/452] 
- [Batch 94/452] 
- [Batch 95/452] 
- [Batch 96/452] 
- [Batch 97/452] 
- [Batch 98/452] 
- [Batch 99/452] 
- [Batch 100/452] 
- [Batch 101/452] 
- [Batch 102/452] 
- [Batch 103/452] 
- [Batch 104/452] 
- [Batch 105/452] 
- [Batch 106/452] 
- [Batch 107/452] 
- [Batch 108/452] 
- [Batch 109/452] 
- [Batch 110/452] 
- [Batch 111/452] 
- [Batch 112/452] 
- [Batch 113/452] 
- [Batch 114/452] 
- [Batch 115/452] 
- [Batch 116/452] 
- [Batch 117/452] 
- [Batch 118/452] 
- [Batch 119/452] 
- [Batch 120/452] 
- [Batch 121/452] 
- [Batch 122/452] 
- [Batch 123/452] 
- [Batch 124/452] 
- [Batch 125/452] 
- [Batch 126/452] 
- [Batch 127/452] 
- [Batch 128/452] 
- [Batch 129/452] 
- [Batch 130/452] 
- [Batch 131/452] 
- [Batch 132/452] 
- [Batch 133/452] 
- [Batch 134/452] 
- [Batch 135/452] 
- [Batch 136/452] 
- [Batch 137/452] 
- [Batch 138/452] 
- [Batch 139/452] 
- [Batch 140/452] 
- [Batch 141/452] 
- [Batch 142/452] 
- [Batch 143/452] 
- [Batch 144/452] 
- [Batch 145/452] 
- [Batch 146/452] 
- [Batch 147/452] 
- [Batch 148/452] 
- [Batch 149/452] 
- [Batch 150/452] 
- [Batch 151/452] 
- [Batch 152/452] 
- [Batch 153/452] 
- [Batch 154/452] 
- [Batch 155/452] 
- [Batch 156/452] 
- [Batch 157/452] 
- [Batch 158/452] 
- [Batch 159/452] 
- [Batch 160/452] 
- [Batch 161/452] 
- [Batch 162/452] 
- [Batch 163/452] 
- [Batch 164/452] 
- [Batch 165/452] 
- [Batch 166/452] 
- [Batch 167/452] 
- [Batch 168/452] 
- [Batch 169/452] 
- [Batch 170/452] 
- [Batch 171/452] 
- [Batch 172/452] 
- [Batch 173/452] 
- [Batch 174/452] 
- [Batch 175/452] 
- [Batch 176/452] 
- [Batch 177/452] 
- [Batch 178/452] 
- [Batch 179/452] 
- [Batch 180/452] 
- [Batch 181/452] 
- [Batch 182/452] 
- [Batch 183/452] 
- [Batch 184/452] 
- [Batch 185/452] 
- [Batch 186/452] 
- [Batch 187/452] 
- [Batch 188/452] 
- [Batch 189/452] 
- [Batch 190/452] 
- [Batch 191/452] 
- [Batch 192/452] 
- [Batch 193/452] 
- [Batch 194/452] 
- [Batch 195/452] 
- [Batch 196/452] 
- [Batch 197/452] 
- [Batch 198/452] 
- [Batch 199/452] 
- [Batch 200/452] 
- [Batch 201/452] 
- [Batch 202/452] 
- [Batch 203/452] 
- [Batch 204/452] 
- [Batch 205/452] 
- [Batch 206/452] 
- [Batch 207/452] 
- [Batch 208/452] 
- [Batch 209/452] 
- [Batch 210/452] 
- [Batch 211/452] 
- [Batch 212/452] 
- [Batch 213/452] 
- [Batch 214/452] 
- [Batch 215/452] 
- [Batch 216/452] 
- [Batch 217/452] 
- [Batch 218/452] 
- [Batch 219/452] 
- [Batch 220/452] 
- [Batch 221/452] 
- [Batch 222/452] 
- [Batch 223/452] 
- [Batch 224/452] 
- [Batch 225/452] 
- [Batch 226/452] 
- [Batch 227/452] 
- [Batch 228/452] 
- [Batch 229/452] 
- [Batch 230/452] 
- [Batch 231/452] 
- [Batch 232/452] 
- [Batch 233/452] 
- [Batch 234/452] 
- [Batch 235/452] 
- [Batch 236/452] 
- [Batch 237/452] 
- [Batch 238/452] 
- [Batch 239/452] 
- [Batch 240/452] 
- [Batch 241/452] 
- [Batch 242/452] 
- [Batch 243/452] 
- [Batch 244/452] 
- [Batch 245/452] 
- [Batch 246/452] 
- [Batch 247/452] 
- [Batch 248/452] 
- [Batch 249/452] 
- [Batch 250/452] 
- [Batch 251/452] 
- [Batch 252/452] 
- [Batch 253/452] 
- [Batch 254/452] 
- [Batch 255/452] 
- [Batch 256/452] 
- [Batch 257/452] 
- [Batch 258/452] 
- [Batch 259/452] 
- [Batch 260/452] 
- [Batch 261/452] 
- [Batch 262/452] 
- [Batch 263/452] 
- [Batch 264/452] 
- [Batch 265/452] 
- [Batch 266/452] 
- [Batch 267/452] 
- [Batch 268/452] 
- [Batch 269/452] 
- [Batch 270/452] 
- [Batch 271/452] 
- [Batch 272/452] 
- [Batch 273/452] 
- [Batch 274/452] 
- [Batch 275/452] 
- [Batch 276/452] 
- [Batch 277/452] 
- [Batch 278/452] 
- [Batch 279/452] 
- [Batch 280/452] 
- [Batch 281/452] 
- [Batch 282/452] 
- [Batch 283/452] 
- [Batch 284/452] 
- [Batch 285/452] 
- [Batch 286/452] 
- [Batch 287/452] 
- [Batch 288/452] 
- [Batch 289/452] 
- [Batch 290/452] 
- [Batch 291/452] 
- [Batch 292/452] 
- [Batch 293/452] 
- [Batch 294/452] 
- [Batch 295/452] 
- [Batch 296/452] 
- [Batch 297/452] 
- [Batch 298/452] 
- [Batch 299/452] 
- [Batch 300/452] 
- [Batch 301/452] 
- [Batch 302/452] 
- [Batch 303/452] 
- [Batch 304/452] 
- [Batch 305/452] 
- [Batch 306/452] 
- [Batch 307/452] 
- [Batch 308/452] 
- [Batch 309/452] 
- [Batch 310/452] 
- [Batch 311/452] 
- [Batch 312/452] 
- [Batch 313/452] 
- [Batch 314/452] 
- [Batch 315/452] 
- [Batch 316/452] 
- [Batch 317/452] 
- [Batch 318/452] 
- [Batch 319/452] 
- [Batch 320/452] 
- [Batch 321/452] 
- [Batch 322/452] 
- [Batch 323/452] 
- [Batch 324/452] 
- [Batch 325/452] 
- [Batch 326/452] 
- [Batch 327/452] 
- [Batch 328/452] 
- [Batch 329/452] 
- [Batch 330/452] 
- [Batch 331/452] 
- [Batch 332/452] 
- [Batch 333/452] 
- [Batch 334/452] 
- [Batch 335/452] 
- [Batch 336/452] 
- [Batch 337/452] 
- [Batch 338/452] 
- [Batch 339/452] 
- [Batch 340/452] 
- [Batch 341/452] 
- [Batch 342/452] 
- [Batch 343/452] 
- [Batch 344/452] 
- [Batch 345/452] 
- [Batch 346/452] 
- [Batch 347/452] 
- [Batch 348/452] 
- [Batch 349/452] 
- [Batch 350/452] 
- [Batch 351/452] 
- [Batch 352/452] 
- [Batch 353/452] 
- [Batch 354/452] 
- [Batch 355/452] 
- [Batch 356/452] 
- [Batch 357/452] 
- [Batch 358/452] 
- [Batch 359/452] 
- [Batch 360/452] 
- [Batch 361/452] 
- [Batch 362/452] 
- [Batch 363/452] 
- [Batch 364/452] 
- [Batch 365/452] 
- [Batch 366/452] 
- [Batch 367/452] 
- [Batch 368/452] 
- [Batch 369/452] 
- [Batch 370/452] 
- [Batch 371/452] 
- [Batch 372/452] 
- [Batch 373/452] 
- [Batch 374/452] 
- [Batch 375/452] 
- [Batch 376/452] 
- [Batch 377/452] 
- [Batch 378/452] 
- [Batch 379/452] 
- [Batch 380/452] 
- [Batch 381/452] 
- [Batch 382/452] 
- [Batch 383/452] 
- [Batch 384/452] 
- [Batch 385/452] 
- [Batch 386/452] 
- [Batch 387/452] 
- [Batch 388/452] 
- [Batch 389/452] 
- [Batch 390/452] 
- [Batch 391/452] 
- [Batch 392/452] 
- [Batch 393/452] 
- [Batch 394/452] 
- [Batch 395/452] 
- [Batch 396/452] 
- [Batch 397/452] 
- [Batch 398/452] 
- [Batch 399/452] 
- [Batch 400/452] 
- [Batch 401/452] 
- [Batch 402/452] 
- [Batch 403/452] 
- [Batch 404/452] 
- [Batch 405/452] 
- [Batch 406/452] 
- [Batch 407/452] 
- [Batch 408/452] 
- [Batch 409/452] 
- [Batch 410/452] 
- [Batch 411/452] 
- [Batch 412/452] 
- [Batch 413/452] 
- [Batch 414/452] 
- [Batch 415/452] 
- [Batch 416/452] 
- [Batch 417/452] 
- [Batch 418/452] 
- [Batch 419/452] 
- [Batch 420/452] 
- [Batch 421/452] 
- [Batch 422/452] 
- [Batch 423/452] 
- [Batch 424/452] 
- [Batch 425/452] 
- [Batch 426/452] 
- [Batch 427/452] 
- [Batch 428/452] 
- [Batch 429/452] 
- [Batch 430/452] 
- [Batch 431/452] 
- [Batch 432/452] 
- [Batch 433/452] 
- [Batch 434/452] 
- [Batch 435/452] 
- [Batch 436/452] 
- [Batch 437/452] 
- [Batch 438/452] 
- [Batch 439/452] 
- [Batch 440/452] 
- [Batch 441/452] 
- [Batch 442/452] 
- [Batch 443/452] 
- [Batch 444/452] 
- [Batch 445/452] 
- [Batch 446/452] 
- [Batch 447/452] 
- [Batch 448/452] 
- [Batch 449/452] 
- [Batch 450/452] 
- [Batch 451/452] 

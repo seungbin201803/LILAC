@@ -1,23 +1,0 @@
-/var/spool/slurm/slurmd/job499365/slurm_script: line 19: ./venv/bin/activate: No such file or directory
-/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torchio/data/image.py:248: UserWarning: Using TorchIO images without a torchio.SubjectsLoader in PyTorch >= 2.3 might have unexpected consequences, e.g., the collated batches will be instances of torchio.Subject with 5D images. Replace your PyTorch DataLoader with a torchio.SubjectsLoader so that the collated batch becomes a dictionary, as expected. See https://github.com/TorchIO-project/torchio/issues/1179 for more context about this issue.
-  warnings.warn(message, stacklevel=1)
-/midtier/sablab/scratch/sep4013/LILAC/./run.py:316: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
-  np.array((predicted).cpu().detach()),
-/midtier/sablab/scratch/sep4013/LILAC/./run.py:320: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
-  tmp_stack_target1 = np.append(tmp_stack_target1, np.array(target1)[:, None], axis=0)
-/midtier/sablab/scratch/sep4013/LILAC/./run.py:321: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
-  tmp_stack_target2 = np.append(tmp_stack_target2, np.array(target2)[:, None], axis=0)
- ----------------- Run Setup Summary -----------------
-JOB NAME: lilac_rt_order_10
-TASK: temporal_ordering
-Target Attribute: timepoint
-BACKBONE: cnn_3D
-RUN MODE: eval
-Num of GPUs: 1
-Num of Model Parameter: 99584
- ----------------- Testing initiated -----------------
- [Batch 0/58]  [Batch 1/58]  [Batch 2/58]  [Batch 3/58]  [Batch 4/58]  [Batch 5/58]  [Batch 6/58]  [Batch 7/58]  [Batch 8/58]  [Batch 9/58]  [Batch 10/58]  [Batch 11/58]  [Batch 12/58]  [Batch 13/58]  [Batch 14/58]  [Batch 15/58]  [Batch 16/58]  [Batch 17/58]  [Batch 18/58]  [Batch 19/58]  [Batch 20/58]  [Batch 21/58]  [Batch 22/58]  [Batch 23/58]  [Batch 24/58]  [Batch 25/58]  [Batch 26/58]  [Batch 27/58]  [Batch 28/58]  [Batch 29/58]  [Batch 30/58]  [Batch 31/58]  [Batch 32/58]  [Batch 33/58]  [Batch 34/58]  [Batch 35/58]  [Batch 36/58]  [Batch 37/58]  [Batch 38/58]  [Batch 39/58]  [Batch 40/58]  [Batch 41/58]  [Batch 42/58]  [Batch 43/58]  [Batch 44/58]  [Batch 45/58]  [Batch 46/58]  [Batch 47/58]  [Batch 48/58]  [Batch 49/58]  [Batch 50/58]  [Batch 51/58]  [Batch 52/58]  [Batch 53/58]  [Batch 54/58]  [Batch 55/58]  [Batch 56/58]  [Batch 57/58] 
-Saved filename:  ./output/lilac_rt_order_10-temporal_ordering-backbone_cnn_3D-lr0.001-seed0-batch8/prediction-testset.csv
-LOSS: 0.563
-warning: AUC calculated only for binary pairs
-AUC: 0.902

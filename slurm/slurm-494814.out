@@ -1,25 +1,0 @@
-/var/spool/slurm/slurmd/job494814/slurm_script: line 19: ./venv/bin/activate: No such file or directory
-/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torchio/data/image.py:248: UserWarning: Using TorchIO images without a torchio.SubjectsLoader in PyTorch >= 2.3 might have unexpected consequences, e.g., the collated batches will be instances of torchio.Subject with 5D images. Replace your PyTorch DataLoader with a torchio.SubjectsLoader so that the collated batch becomes a dictionary, as expected. See https://github.com/TorchIO-project/torchio/issues/1179 for more context about this issue.
-  warnings.warn(message, stacklevel=1)
-/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torchio/transforms/transform.py:162: RuntimeWarning: Output shape (144, 145, 144) != target shape (np.int64(144), np.int64(144), np.int64(144)). Fixing with CropOrPad
-  transformed = self.apply_transform(subject)
-/midtier/sablab/scratch/sep4013/LILAC/./run.py:317: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
-  np.array((predicted).cpu().detach()),
-/midtier/sablab/scratch/sep4013/LILAC/./run.py:321: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
-  tmp_stack_target1 = np.append(tmp_stack_target1, np.array(target1)[:, None], axis=0)
-/midtier/sablab/scratch/sep4013/LILAC/./run.py:322: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
-  tmp_stack_target2 = np.append(tmp_stack_target2, np.array(target2)[:, None], axis=0)
- ----------------- Run Setup Summary -----------------
-JOB NAME: lilac_rt_order_4
-TASK: temporal_ordering
-Target Attribute: timepoint
-BACKBONE: cnn_3D
-RUN MODE: eval
-Num of GPUs: 1
-Num of Model Parameter: 109248
- ----------------- Testing initiated -----------------
- [Batch 0/79]  [Batch 1/79]  [Batch 2/79]  [Batch 3/79]  [Batch 4/79]  [Batch 5/79]  [Batch 6/79]  [Batch 7/79]  [Batch 8/79]  [Batch 9/79]  [Batch 10/79]  [Batch 11/79]  [Batch 12/79]  [Batch 13/79]  [Batch 14/79]  [Batch 15/79]  [Batch 16/79]  [Batch 17/79]  [Batch 18/79]  [Batch 19/79]  [Batch 20/79]  [Batch 21/79]  [Batch 22/79]  [Batch 23/79]  [Batch 24/79]  [Batch 25/79]  [Batch 26/79]  [Batch 27/79]  [Batch 28/79]  [Batch 29/79]  [Batch 30/79]  [Batch 31/79]  [Batch 32/79]  [Batch 33/79]  [Batch 34/79]  [Batch 35/79]  [Batch 36/79]  [Batch 37/79]  [Batch 38/79]  [Batch 39/79]  [Batch 40/79]  [Batch 41/79]  [Batch 42/79]  [Batch 43/79]  [Batch 44/79]  [Batch 45/79]  [Batch 46/79]  [Batch 47/79]  [Batch 48/79]  [Batch 49/79]  [Batch 50/79]  [Batch 51/79]  [Batch 52/79]  [Batch 53/79]  [Batch 54/79]  [Batch 55/79]  [Batch 56/79]  [Batch 57/79]  [Batch 58/79]  [Batch 59/79]  [Batch 60/79]  [Batch 61/79]  [Batch 62/79]  [Batch 63/79]  [Batch 64/79]  [Batch 65/79]  [Batch 66/79]  [Batch 67/79]  [Batch 68/79]  [Batch 69/79]  [Batch 70/79]  [Batch 71/79]  [Batch 72/79]  [Batch 73/79]  [Batch 74/79]  [Batch 75/79]  [Batch 76/79]  [Batch 77/79]  [Batch 78/79] 
-Saved filename:  ./output/lilac_rt_order_4-temporal_ordering-backbone_cnn_3D-lr0.01-seed0-batch8/prediction-testset.csv
-LOSS: 0.692
-warning: AUC calculated only for binary pairs
-AUC: 0.557

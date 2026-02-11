@@ -1,2 +1,0 @@
-/var/spool/slurm/slurmd/job459497/slurm_script: line 13: ./venv/bin/activate: No such file or directory
-slurmstepd: error: *** JOB 459497 ON ai-gpu03 CANCELLED AT 2025-04-29T15:58:59 ***

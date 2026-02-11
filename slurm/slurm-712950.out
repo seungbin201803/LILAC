@@ -1,4 +1,0 @@
-/var/spool/slurm/slurmd/job712950/slurm_script: line 19: ./venv/bin/activate: No such file or directory
-### pat_idx_int
-['Fraction_3_Setup_Scan.nii.gz', 'Fraction_5_Setup_Scan.nii.gz', 'Fraction_2_Setup_Scan.nii.gz', 'Fraction_5_Setup_Scan.json', 'Fraction_4_Setup_Scan.json', 'Fraction_4_Setup_Scan.nii.gz', 'Fraction_1_Setup_Scan.nii.gz', 'Fraction_2_Setup_Scan.json', 'Fraction_3_Setup_Scan.json', 'Fraction_1_Setup_Scan.json']
-['3', '5', '2', '4', '1']
