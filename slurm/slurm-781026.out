@@ -1,0 +1,20 @@
+/var/spool/slurm/slurmd/job781026/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torchio/data/image.py:253: UserWarning: Using TorchIO images without a torchio.SubjectsLoader in PyTorch >= 2.3 might have unexpected consequences, e.g., the collated batches will be instances of torchio.Subject with 5D images. Replace your PyTorch DataLoader with a torchio.SubjectsLoader so that the collated batch becomes a dictionary, as expected. See https://github.com/TorchIO-project/torchio/issues/1179 for more context about this issue.
+  warnings.warn(message, stacklevel=1)
+ ----------------- Run Setup Summary -----------------
+JOB NAME: LOADER_PSAo_7
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: resnet18_3D_psaofc3
+RUN MODE: train
+Num of GPUs: 1
+Num of Model Parameter: 33267776
+ ----------------- Training initiated -----------------
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run_PSAo.py", line 1263, in <module>
+    train(model, args)
+    ~~~~~^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run_PSAo.py", line 188, in train
+    loss = loss_o * args.alpha_oloss + loss_psa * (1-args.alpha_oloss)
+           ~~~~~~~^~~~~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for *: 'Tensor' and 'NoneType'

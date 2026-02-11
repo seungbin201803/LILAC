@@ -1,0 +1,32 @@
+/var/spool/slurm/slurmd/job779501/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torchio/data/image.py:253: UserWarning: Using TorchIO images without a torchio.SubjectsLoader in PyTorch >= 2.3 might have unexpected consequences, e.g., the collated batches will be instances of torchio.Subject with 5D images. Replace your PyTorch DataLoader with a torchio.SubjectsLoader so that the collated batch becomes a dictionary, as expected. See https://github.com/TorchIO-project/torchio/issues/1179 for more context about this issue.
+  warnings.warn(message, stacklevel=1)
+/midtier/sablab/scratch/sep4013/LILAC/./run.py:640: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
+  np.array((predicted).cpu().detach()),
+/midtier/sablab/scratch/sep4013/LILAC/./run.py:644: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
+  tmp_stack_target1 = np.append(tmp_stack_target1, np.array(target1)[:, None], axis=0)
+/midtier/sablab/scratch/sep4013/LILAC/./run.py:645: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
+  tmp_stack_target2 = np.append(tmp_stack_target2, np.array(target2)[:, None], axis=0)
+ ----------------- Run Setup Summary -----------------
+JOB NAME: lilac_rt_order_61
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: resnet18_3D
+RUN MODE: eval
+Num of GPUs: 1
+Num of Model Parameter: 33203776
+ ----------------- Testing initiated -----------------
+RUN TEST
+ [Batch 0/76]  [Batch 1/76]  [Batch 2/76]  [Batch 3/76]  [Batch 4/76]  [Batch 5/76]  [Batch 6/76]  [Batch 7/76]  [Batch 8/76]  [Batch 9/76]  [Batch 10/76]  [Batch 11/76]  [Batch 12/76]  [Batch 13/76]  [Batch 14/76]  [Batch 15/76]  [Batch 16/76]  [Batch 17/76]  [Batch 18/76]  [Batch 19/76]  [Batch 20/76]  [Batch 21/76]  [Batch 22/76]  [Batch 23/76]  [Batch 24/76]  [Batch 25/76]  [Batch 26/76]  [Batch 27/76]  [Batch 28/76]  [Batch 29/76]  [Batch 30/76]  [Batch 31/76]  [Batch 32/76]  [Batch 33/76]  [Batch 34/76]  [Batch 35/76]  [Batch 36/76]  [Batch 37/76]  [Batch 38/76]  [Batch 39/76]  [Batch 40/76]  [Batch 41/76]  [Batch 42/76]  [Batch 43/76]  [Batch 44/76]  [Batch 45/76]  [Batch 46/76]  [Batch 47/76]  [Batch 48/76]  [Batch 49/76]  [Batch 50/76]  [Batch 51/76]  [Batch 52/76]  [Batch 53/76]  [Batch 54/76]  [Batch 55/76]  [Batch 56/76]  [Batch 57/76]  [Batch 58/76]  [Batch 59/76]  [Batch 60/76]  [Batch 61/76]  [Batch 62/76]  [Batch 63/76]  [Batch 64/76]  [Batch 65/76]  [Batch 66/76]  [Batch 67/76]  [Batch 68/76]  [Batch 69/76]  [Batch 70/76]  [Batch 71/76]  [Batch 72/76]  [Batch 73/76]  [Batch 74/76]  [Batch 75/76] 
+Saved filename:  ./output/lilac_rt_order_61-temporal_ordering-backbone_resnet18_3D-lr0.001-seed0-batch8/prediction-testset.csv
+LOSS: 0.516
+warning: AUC calculated only for binary pairs
+AUC: 0.937
+warning: ACC calculated only for binary/positive pairs
+ACC: 0.874
+interval 1.0:                       acc=1.0                       , num=8
+interval 4.0:                       acc=0.864                       , num=140
+interval 5.0:                       acc=1.0                       , num=3
+interval from one 1.0:                       acc=1.0                       , num=8
+interval from one 4.0:                       acc=0.864                       , num=140
+interval from one 5.0:                       acc=1.0                       , num=3

@@ -1,0 +1,2 @@
+/var/spool/slurm/slurmd/job762242/slurm_script: line 20: ./venv/bin/activate: No such file or directory
+[2025-10-29T16:41:55.704] error: *** JOB 762242 ON ai-gpu04 CANCELLED AT 2025-10-29T16:41:55 DUE to SIGNAL Terminated ***

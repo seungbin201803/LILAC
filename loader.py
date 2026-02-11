@@ -7,6 +7,10 @@ from torchvision.transforms.functional import InterpolationMode
 import torch
 import torchio as tio
 import numpy as np
+import ast
+import nibabel as nib
+
+from random import shuffle
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -98,81 +102,257 @@ class loader2D(Dataset):
 
 
 class loader3D(Dataset):
-    def __init__(self, args, trainvaltest):
+    def __init__(self, args, trainvaltest, flag_subject=False):
+
+        self.jobname = args.jobname
+        self.flag_subject = flag_subject
+        self.dataloader_type = args.dataloader_type
 
         if trainvaltest == 'train':
             self.demo = pd.read_csv(args.csv_file_train, index_col=0)
             self.augmentation = True
-            assert set(['fname', 'subject', args.targetname]).issubset(
-                set(list(self.demo.columns))), f"Check input csv file column names"
+            if self.dataloader_type == 'FEATURES':
+                assert set(['features', 'subject', args.targetname]).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            elif self.dataloader_type == 'PSAo':
+                assert set(['fname', 'subject', args.targetname, 'psa']).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            elif self.dataloader_type == 'PSA':
+                assert set(['subject', 'fname_1', 'fname_2']).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            else:
+                assert set(['fname', 'subject', args.targetname]).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
         elif trainvaltest == 'val':
             self.demo = pd.read_csv(args.csv_file_val, index_col=0)
             self.augmentation = False
-
-            assert set(['fname', 'subject', args.targetname]).issubset(
-                set(list(self.demo.columns))), f"Check input csv file column names"
+            if self.dataloader_type == 'FEATURES':
+                assert set(['features', 'subject', args.targetname]).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            elif self.dataloader_type == 'PSAo':
+                assert set(['fname', 'subject', args.targetname, 'psa']).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            elif self.dataloader_type == 'PSA':
+                assert set(['subject', 'fname_1', 'fname_2']).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            else:
+                assert set(['fname', 'subject', args.targetname]).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
         else:
             self.demo = pd.read_csv(args.csv_file_test, index_col=0)
             self.augmentation = False
-            assert set(['fname', 'subject', args.targetname]).issubset(
-                set(list(self.demo.columns))), f"Check input csv file column names"
+            if self.dataloader_type == 'FEATURES':
+                assert set(['features', 'subject', args.targetname]).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            elif self.dataloader_type == 'PSAo':
+                assert set(['fname', 'subject', args.targetname, 'psa']).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            elif self.dataloader_type == 'PSA':
+                assert set(['subject', 'fname_1', 'fname_2']).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
+            else:
+                assert set(['fname', 'subject', args.targetname]).issubset(
+                    set(list(self.demo.columns))), f"Check input csv file column names"
 
         assert len(self.demo) != 0, f"Input csv file is empty"
 
 
-        self.jobname = args.jobname
-        # Filter NaN values
-        nan_indices = np.concatenate([np.where(np.isnan(self.demo[k]))[0] for k in [args.targetname] + args.optional_meta])
-        if nan_indices.size>0:
-            self.demo = self.demo.drop(index = nan_indices).reset_index(drop=True)
-
-        # image directory
-        IDunq = np.unique(self.demo['subject'])
-        index_combination = np.empty((0, 2))
-        for sid in IDunq:
-            indices = np.where(self.demo['subject'] == sid)[0]
-            ### all possible pairs
-            tmp_combination = np.array(
-                np.meshgrid(np.array(range(len(indices))), np.array(range(len(indices))))).T.reshape(-1, 2)
-
-            if args.exclude_sametarget:
-                tmp_combination_fix = []
-                for c in tmp_combination:
-                    if c[0]!=c[1]: tmp_combination_fix.append(c)
-                tmp_combination = tmp_combination_fix
-            
-            index_combination = np.append(index_combination, indices[tmp_combination], 0)
-
-        self.image_size = args.image_size
-        # TODO self.fnames = np.array('I' + meta.IMAGEUID.astype('int').astype('str') + '_mni_norm.nii.gz')
-
         self.targetname = args.targetname
         self.imgdir = args.image_directory
-        self.index_combination = index_combination
 
         if len(args.optional_meta)>0:
             self.optional_meta = np.array(self.demo[args.optional_meta])
         else:
             self.optional_meta = ''
+        
+        if self.dataloader_type in ['PSAo', 'FEATURES']:
+            IDunq = np.unique(self.demo['subject'])
+            index_combination = np.empty((0, 2))
+            for sid in IDunq:
+                indices = np.where(self.demo['subject'] == sid)[0]
+                ### all possible pairs
+                tmp_combination = np.array(
+                    np.meshgrid(np.array(range(len(indices))), np.array(range(len(indices))))).T.reshape(-1, 2)
+
+                if args.exclude_sametarget:
+                    tmp_combination_fix = []
+                    for c in tmp_combination:
+                        if c[0]!=c[1]: tmp_combination_fix.append(c)
+                    tmp_combination = tmp_combination_fix
+                
+                index_combination = np.append(index_combination, indices[tmp_combination], 0)
+
+            self.index_combination = index_combination
+        elif self.dataloader_type == 'PSA':
+            self.index_combination = [x for x in range(len(self.demo))] #subject
+            shuffle(self.index_combination)
+        elif self.dataloader_type == 'feature38':
+            # # Filter NaN values
+            # nan_indices = np.concatenate([np.where(np.isnan(self.demo[k]))[0] for k in [args.targetname] + args.optional_meta])
+            # if nan_indices.size>0:
+            #     self.demo = self.demo.drop(index = nan_indices).reset_index(drop=True)
+
+            # image directory
+            IDunq = np.unique(self.demo['subject'])
+            index_combination = np.empty((0, 2))
+            for sid in IDunq:
+                indices = np.where(self.demo['subject'] == sid)[0]
+                ### all possible pairs
+                tmp_combination = np.array(
+                    np.meshgrid(np.array(range(len(indices))), np.array(range(len(indices))))).T.reshape(-1, 2)
+
+                if args.exclude_sametarget:
+                    tmp_combination_fix = []
+                    for c in tmp_combination:
+                        if c[0]!=c[1]: tmp_combination_fix.append(c)
+                    tmp_combination = tmp_combination_fix
+                
+                if args.only_pos:
+                    tmp_combination_fix = []
+                    for c in tmp_combination:
+                        if c[0]<=c[1]: tmp_combination_fix.append(c)
+                    tmp_combination = tmp_combination_fix
+                
+                index_combination = np.append(index_combination, indices[tmp_combination], 0)
+            self.index_combination = index_combination
+        else:
+            # Filter NaN values
+            nan_indices = np.concatenate([np.where(np.isnan(self.demo[k]))[0] for k in [args.targetname] + args.optional_meta])
+            if nan_indices.size>0:
+                self.demo = self.demo.drop(index = nan_indices).reset_index(drop=True)
+
+            # image directory
+            IDunq = np.unique(self.demo['subject'])
+            index_combination = np.empty((0, 2))
+            for sid in IDunq:
+                indices = np.where(self.demo['subject'] == sid)[0]
+                ### all possible pairs
+                tmp_combination = np.array(
+                    np.meshgrid(np.array(range(len(indices))), np.array(range(len(indices))))).T.reshape(-1, 2)
+
+                if args.exclude_sametarget:
+                    tmp_combination_fix = []
+                    for c in tmp_combination:
+                        if c[0]!=c[1]: tmp_combination_fix.append(c)
+                    tmp_combination = tmp_combination_fix
+                
+                if args.only_pos:
+                    tmp_combination_fix = []
+                    for c in tmp_combination:
+                        if c[0]<=c[1]: tmp_combination_fix.append(c)
+                    tmp_combination = tmp_combination_fix
+
+                index_combination = np.append(index_combination, indices[tmp_combination], 0)
+
+            self.image_size = args.image_size
+            # TODO self.fnames = np.array('I' + meta.IMAGEUID.astype('int').astype('str') + '_mni_norm.nii.gz')
+
+            
+            self.index_combination = index_combination
+
+           
 
     def __getitem__(self, index):
-        index1, index2 = self.index_combination[index].astype('int')
-        target1, target2 = self.demo[self.targetname][index1], self.demo[self.targetname][index2]
+        if self.dataloader_type == 'FEATURES':
+            index1, index2 = self.index_combination[index].astype('int')
+            target1, target2 = self.demo[self.targetname][index1], self.demo[self.targetname][index2]
 
-        if len(self.optional_meta) > 0:
-            meta1, meta2 = self.optional_meta[index1, :], self.optional_meta[index2, :]
+            # if len(self.optional_meta) > 0:
+            #     meta1, meta2 = self.optional_meta[index1, :], self.optional_meta[index2, :]
 
-        fname1 = os.path.join(self.imgdir, self.demo.fname.iloc[int(index1)])
-        fname2 = os.path.join(self.imgdir, self.demo.fname.iloc[int(index2)])
+            image1 = torch.from_numpy(np.array(ast.literal_eval(self.demo['features'][index1])).astype('float'))
+            image2 = torch.from_numpy(np.array(ast.literal_eval(self.demo['features'][index2])).astype('float'))
+        elif self.dataloader_type == 'PSAo':
+            index1, index2 = self.index_combination[index].astype('int')
+            targeto1, targeto2 = self.demo[self.targetname][index1], self.demo[self.targetname][index2]
+            targetp1, targetp2 = self.demo['psa'][index1], self.demo['psa'][index2]
 
-        image1 = tio.ScalarImage(fname1)
-        image2 = tio.ScalarImage(fname2)
+            if len(self.optional_meta) > 0:
+                meta1, meta2 = self.optional_meta[index1, :], self.optional_meta[index2, :]
 
-        resize = tio.transforms.Resize(tuple(self.image_size))
-        image1 = resize(image1)
-        image2 = resize(image2)
+            fname1 = os.path.join(self.imgdir, self.demo.fname.iloc[int(index1)])
+            fname2 = os.path.join(self.imgdir, self.demo.fname.iloc[int(index2)])
 
-        if self.augmentation:
+            image1 = tio.ScalarImage(fname1)
+            image2 = tio.ScalarImage(fname2)
+        elif self.dataloader_type == 'PSA':
+            row = self.demo.iloc[index]
+
+            fname1 = os.path.join(self.imgdir, str(row['subject']).zfill(5), row['fname_1'])
+            fname2 = os.path.join(self.imgdir, str(row['subject']).zfill(5), row['fname_2'])
+
+            image1 = tio.ScalarImage(fname1)
+            image2 = tio.ScalarImage(fname2)
+
+            if row['psa'] == 0:
+                target1 = 2
+                target2 = 1
+            elif row['psa'] == 1:
+                target1 = 1
+                target2 = 2
+        elif self.dataloader_type == 'feature38':
+            index1, index2 = self.index_combination[index].astype('int')
+            target1, target2 = self.demo[self.targetname][index1], self.demo[self.targetname][index2]
+            subject1, subject2 = self.demo['subject'][index1], self.demo['subject'][index2]
+
+            fname1 = self.demo.fname.iloc[int(index1)]
+            fname2 = self.demo.fname.iloc[int(index2)]
+
+            fnum1 = int(float(fname1[fname1.index('Fraction_')+9:fname1.index('_Setup')]))
+            fnum2 = int(float(fname2[fname2.index('Fraction_')+9:fname2.index('_Setup')]))
+
+            featurename1 = f'subject_{int(subject1)}_timepoint_{fnum1}.npy'
+            featurename2 = f'subject_{int(subject2)}_timepoint_{fnum2}.npy'
+
+            feature1 = np.load(os.path.join(self.imgdir, featurename1))
+            feature2 = np.load(os.path.join(self.imgdir, featurename2))
+
+            #print(feature1.shape) #(512, 5, 5, 5)
+
+            image1 = feature1.flatten().astype('float')
+            image2 = feature2.flatten().astype('float')
+
+            if target1 != target2: 
+                print("target1 != target2")
+                print(subject1, subject2)
+                print(target1, target2)
+                exit()
+            if subject1 != subject2:
+                print('subject1 != subject2')
+                print(subject1, subject2)
+                exit()
+        else:
+            index1, index2 = self.index_combination[index].astype('int')
+            target1, target2 = self.demo[self.targetname][index1], self.demo[self.targetname][index2]
+            subject1, subject2 = self.demo['subject'][index1], self.demo['subject'][index2]
+
+            if len(self.optional_meta) > 0:
+                meta1, meta2 = self.optional_meta[index1, :], self.optional_meta[index2, :]
+
+            fname1 = os.path.join(self.imgdir, self.demo.fname.iloc[int(index1)])
+            fname2 = os.path.join(self.imgdir, self.demo.fname.iloc[int(index2)])
+
+            image1 = tio.ScalarImage(fname1)
+            image2 = tio.ScalarImage(fname2)
+            # print(image1.shape) #(80, 2, 80, 80)
+
+            # ### mask channel 2
+            # image1 = nib.load(fname1).get_fdata()
+            # image2 = nib.load(fname2).get_fdata()
+            # #print(image1.shape) #(2, 80, 80, 80)
+
+            # image1 = tio.ScalarImage(tensor=torch.from_numpy(image1), affine=np.eye(4))
+            # image2 = tio.ScalarImage(tensor=torch.from_numpy(image2), affine=np.eye(4))
+            # #print(image1.shape) #(2, 80, 80, 80)
+
+            resize = tio.transforms.Resize(tuple(self.image_size))
+            image1 = resize(image1)
+            image2 = resize(image2)
+            # print(image1.shape) #(80, 80, 80, 80)->(2, 80, 80, 80)
+            # exit()
+
+        if self.augmentation and self.dataloader_type in [None, 'PSA', 'PSAo']:        
+        # 'LOADER_FEATURES' not in self.jobname:
             pairwise_transform_list = []
             imagewise_transform_list = []
 
@@ -210,16 +390,27 @@ class loader3D(Dataset):
                 image1 = imagewise_augmentation(image1)
                 image2 = imagewise_augmentation(image2)
 
-        image1 = image1.numpy().astype('float')
-        image2 = image2.numpy().astype('float')
+        if self.dataloader_type in [None, 'PSA', 'PSAo']:
+        #'LOADER_FEATURES' not in self.jobname:
+            image1 = image1.numpy().astype('float')
+            image2 = image2.numpy().astype('float')
 
-        if len(self.optional_meta) > 0:
-            return [image1, target1, meta1], \
-                   [image2, target2, meta2]
-
+        if self.dataloader_type == 'PSAo':
+            return [image1, targeto1, targetp1], [image2, targeto2, targetp2]
         else:
-            return [image1, target1], \
-                   [image2, target2]
+            # if len(self.optional_meta) > 0:
+            #     return [image1, target1, meta1], \
+            #         [image2, target2, meta2]
+
+            # else:
+                # return [image1, target1], \
+                #     [image2, target2]
+            if self.flag_subject:
+                return [image1, target1, subject1], \
+                    [image2, target2, subject2]
+            else:
+                return [image1, target1], \
+                        [image2, target2]
 
     def __len__(self):
         return len(self.index_combination)

@@ -1,0 +1,25 @@
+ ----------------- Run Setup Summary -----------------
+JOB NAME: 20250508_lilac_woundhealing_eval
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: cnn_2D
+RUN MODE: eval
+Num of GPUs: 1
+Num of Model Parameter: 35920
+ ----------------- Testing initiated -----------------
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 478, in <module>
+    test(model, args)
+    ~~~~^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 246, in test
+    network.load_state_dict(torch.load(savedmodelname))
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torch/serialization.py", line 1479, in load
+    with _open_file_like(f, "rb") as opened_file:
+         ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torch/serialization.py", line 759, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/home/sep4013/.conda/envs/lilac/lib/python3.13/site-packages/torch/serialization.py", line 740, in __init__
+    super().__init__(open(name, mode))
+                     ~~~~^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: './output/20250508_lilac_woundhealing_eval-temporal_ordering-backbone_cnn_2D-lr0.001-seed0-batch128/model_best.pth'

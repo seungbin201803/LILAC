@@ -165,12 +165,19 @@ def train(network, opt):
                 input1, target1 = I1
                 input2, target2 = I2
                 predicted = network(input2.type(Tensor), input1.type(Tensor))
-
+            
             targetdiff = (target2 - target1)[:, None].type(Tensor)
             if opt.task_option == 'o':
                 targetdiff[targetdiff > 0] = 1
                 targetdiff[targetdiff == 0] = 0.5
                 targetdiff[targetdiff < 0] = 0
+            elif opt.task_option == 's':
+                if (target1 == target2).all() is False:
+                    print('target1 != target2')
+                    print(target1)
+                    print(target2)
+                    exit()
+                targetdiff = target1[:, None].type(Tensor) #torch.Size([8, 1])
 
             # Loss
             optimizer.zero_grad()
@@ -178,7 +185,7 @@ def train(network, opt):
             loss.backward()
             optimizer.step()
             epoch_total_loss.append(loss.item())
-            
+
             # Log Progress
             batches_done = epoch * len(loader_train) + step
             batches_left = opt.max_epoch * len(loader_train) - batches_done
@@ -234,7 +241,14 @@ def train(network, opt):
                     targetdiff[targetdiff > 0] = 1
                     targetdiff[targetdiff == 0] = 0.5
                     targetdiff[targetdiff < 0] = 0
-
+                elif opt.task_option == 's':
+                    if (target1 == target2).all() is False:
+                        print('target1 != target2')
+                        print(target1)
+                        print(target2)
+                        exit()
+                    targetdiff = target1[:, None].type(Tensor) 
+                
                 valloss = args.loss(predicted, targetdiff)
                 valloss_total.append(valloss.item())
 
@@ -486,6 +500,10 @@ def test(network,opt, overwrite = False):
     #                      't': ['loss', 'rmse'],
     #                      's': ['loss', 'rmse']}
 
+    if opt.gradcam:
+        visualize_gradcam_pair(network, opt, visualization=True)
+        return
+
     resultname = f'prediction-testset'
     run = False
     resultfilename = os.path.join(f'' + opt.output_fullname, f'{resultname}.csv')
@@ -592,7 +610,7 @@ def test(network,opt, overwrite = False):
 
         network.eval()
 
-        loader_test = torch.utils.data.DataLoader(args.test_loader,
+        loader_test = torch.utils.data.DataLoader(opt.test_loader,
                                                   batch_size=opt.batchsize, shuffle=False, num_workers=opt.num_workers)
 
         tmp_stack_target = np.empty((0, 1))
@@ -613,7 +631,7 @@ def test(network,opt, overwrite = False):
                    )
             )
 
-            if len(args.optional_meta) > 0:
+            if len(opt.optional_meta) > 0:
                 I1, I2 = batch
                 input1, target1, meta1 = I1
                 input2, target2, meta2 = I2
@@ -631,6 +649,13 @@ def test(network,opt, overwrite = False):
                 targetdiff[targetdiff > 0] = 1
                 targetdiff[targetdiff == 0] = 0.5
                 targetdiff[targetdiff < 0] = 0
+            elif opt.task_option == 's':
+                if (target1 == target2).all() is False:
+                    print('target1 != target2')
+                    print(target1)
+                    print(target2)
+                    exit()
+                targetdiff = target1[:, None].type(Tensor)
 
             tmp_stack_predicted = np.append(tmp_stack_predicted,
                                             np.array((predicted).cpu().detach()),
@@ -695,8 +720,141 @@ def test(network,opt, overwrite = False):
         #         else:
         #             print(f'{dtm.upper()}: {dict_metric[dtm](target_diff, feature_diff)}:.3f')
 
-    if opt.gradcam:
-        visualize_gradcam_pair(network, opt, args.test_loader, visualization=False)
+    
+def savefeature(network,opt, overwrite = False):
+    savedmodelname = f"{opt.output_fullname}/model_best.pth"
+
+    cuda = True
+    Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
+    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if cuda else "cpu")
+
+    dir_save = os.path.join(f'' + opt.output_fullname, 'save_feature')
+    if os.path.isdir(dir_save) is False: os.mkdir(dir_save)
+
+    network = get_network(opt, network, savedmodelname)
+
+    network.eval()
+
+    loader_train = torch.utils.data.DataLoader(args.train_loader,
+                                               batch_size=opt.batchsize, shuffle=False, num_workers=opt.num_workers)
+
+    loader_val = torch.utils.data.DataLoader(args.val_loader,
+                                             batch_size=opt.batchsize, shuffle=False, num_workers=opt.num_workers)
+
+    loader_test = torch.utils.data.DataLoader(opt.test_loader,
+                                                batch_size=opt.batchsize, shuffle=False, num_workers=opt.num_workers)
+
+    for title, loader in {'train': loader_train, 'val': loader_val, 'test': loader_test}.items():
+        print("##### ", title)
+
+        # feature_tensor1_all, feature_tensor2_all, feature_tensordif_all = None, None, None
+        # subject1_all, subject2_all = None, None
+        for teststep, batch in enumerate(loader):
+            sys.stdout.write(
+                "\r [Batch %d/%d] \n"  # [ target diff: %d ]
+                % (teststep,
+                    len(loader_test),
+                    )
+            )
+
+            # if len(opt.optional_meta) > 0:
+            #     I1, I2 = batch
+            #     input1, target1, meta1 = I1
+            #     input2, target2, meta2 = I2
+            #     # predicted = network(input2.type(Tensor), input1.type(Tensor),
+            #     #                     meta = [meta2.type(Tensor), meta1.type(Tensor)])
+
+            # else:
+            I1, I2 = batch
+            input1, target1, subject1 = I1
+            input2, target2, subject2 = I2
+            #predicted = network(input2.type(Tensor), input1.type(Tensor))
+            
+            if opt.backbone_name == "resnet18_3D":
+                feature_tensor1 = network.module.backbone.conv1(input1.type(Tensor).to(device))
+                #print('conv1: ', feature_tensor1.shape)
+                feature_tensor1 = network.module.backbone.bn1(feature_tensor1)
+                #print('bn1: ', feature_tensor1.shape)
+                feature_tensor1 = network.module.backbone.relu(feature_tensor1)
+                #print('relu: ', feature_tensor1.shape)
+
+                feature_tensor1 = network.module.backbone.maxpool(feature_tensor1)
+                #print('maxpool: ', feature_tensor1.shape)
+
+                feature_tensor1 = network.module.backbone.layer1(feature_tensor1)
+                #print('layer1: ', feature_tensor1.shape)
+
+                feature_tensor1 = network.module.backbone.layer2(feature_tensor1)
+                #print('layer2: ', feature_tensor1.shape)
+
+                feature_tensor1 = network.module.backbone.layer3(feature_tensor1)
+                #print('layer3: ', feature_tensor1.shape)
+
+                feature_tensor1 = network.module.backbone.layer4(feature_tensor1)
+                #print('layer4: ', feature_tensor1.shape)
+
+                feature_tensor2 = network.module.backbone.conv1(input2.type(Tensor).to(device))
+                feature_tensor2 = network.module.backbone.bn1(feature_tensor2)
+                feature_tensor2 = network.module.backbone.relu(feature_tensor2)
+                feature_tensor2 = network.module.backbone.maxpool(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer1(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer2(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer3(feature_tensor2)
+                feature_tensor2 = network.module.backbone.layer4(feature_tensor2)
+            else:
+                print("Not implemented")
+                exit()
+            
+            feature_tensor_dif = feature_tensor2 - feature_tensor1
+
+            feature_tensor1 = feature_tensor1.cpu().detach().numpy()
+            feature_tensor2 = feature_tensor2.cpu().detach().numpy()
+            feature_tensor_dif = feature_tensor_dif.cpu().detach().numpy()
+            subject1 = subject1.cpu().detach().numpy()
+            subject2 = subject2.cpu().detach().numpy()
+            target1 = target1.cpu().detach().numpy()
+            target2 = target2.cpu().detach().numpy()
+
+            for idx in range(len(subject1)):
+                np.save(os.path.join(dir_save, f'subject_{subject1[idx]}_timepoint_{target1[idx]}.npy'), feature_tensor1[idx])
+                np.save(os.path.join(dir_save, f'subject_{subject2[idx]}_timepoint_{target2[idx]}.npy'), feature_tensor2[idx])
+
+            # print('feature_tensor1: ', feature_tensor1.shape)
+            # print('feature_tensor2: ', feature_tensor2.shape)
+            # print('feature_tensor_dif: ', feature_tensor_dif.shape)
+            # # (8, 512, 5, 5, 5)
+
+            # if feature_tensor1_all is None: feature_tensor1_all = feature_tensor1
+            # else: feature_tensor1_all = np.append(feature_tensor1_all, feature_tensor1, axis=0)
+                
+            # if feature_tensor2_all is None: feature_tensor2_all = feature_tensor2
+            # else: feature_tensor2_all = np.append(feature_tensor2_all, feature_tensor2, axis=0)
+
+            # if feature_tensordif_all is None: feature_tensordif_all = feature_tensor_dif
+            # else: feature_tensordif_all = np.append(feature_tensordif_all, feature_tensor_dif, axis=0)
+
+            # if subject1_all is None: subject1_all = subject1
+            # else: subject1_all = np.append(subject1_all, subject1, axis=0)
+
+            # if subject2_all is None: subject2_all = subject2
+            # else: subject2_all = np.append(subject2_all, subject2, axis=0)
+
+            # print('feature_tensor1_all: ', feature_tensor1_all.shape)
+            # print('feature_tensor2_all: ', feature_tensor2_all.shape)
+            # print('feature_tensordif_all: ', feature_tensordif_all.shape)
+
+        # print('feature_tensor1_all: ', feature_tensor1_all.shape)
+        # print('feature_tensor2_all: ', feature_tensor2_all.shape)
+        # print('feature_tensordif_all: ', feature_tensordif_all.shape)
+        # print('subject1_all: ', subject1_all.shape)
+        # print('subject2_all: ', subject2_all.shape)
+        
+        # np.save(os.path.join(dir_save, f'{title}_feature_1.npy'), feature_tensor1_all)
+        # np.save(os.path.join(dir_save, f'{title}_feature_2.npy'), feature_tensor2_all)
+        # np.save(os.path.join(dir_save, f'{title}_feature_dif.npy'), feature_tensordif_all)
+        # np.save(os.path.join(dir_save, f'{title}_subject_1.npy'), subject1_all)
+        # np.save(os.path.join(dir_save, f'{title}_subject_2.npy'), subject2_all)
 
 
 def parse_args():
@@ -713,7 +871,7 @@ def parse_args():
     parser.add_argument('--epoch', default=0, type=int, help="starting epoch")
     parser.add_argument('--save_epoch_num', default=1, type=int, help="validate and save every N epoch")
 
-    parser.add_argument('--image_directory', default='./datasets', type=str)  # , required=True)
+    parser.add_argument('--image_directory', type=str)  # , required=True) default='./datasets', 
     parser.add_argument('--csv_file_train', default='./datasets/demo_oasis_train.csv', type=str,
                         help="csv file for training set")  # , required=True)
     parser.add_argument('--csv_file_val', default='./datasets/demo_oasis_val.csv', type=str,
@@ -723,7 +881,7 @@ def parse_args():
     parser.add_argument('--output_directory', default='./output', type=str,
                         help="directory path for saving model and outputs")  # , required=True)
 
-    parser.add_argument('--image_size', default="128, 128, 128", type=str, help="w,h for 2D and w,h,d for 3D")
+    parser.add_argument('--image_size', type=str, help="w,h for 2D and w,h,d for 3D") #default="128, 128, 128", 
     parser.add_argument('--image_channel', default=1, type=int)
     parser.add_argument('--task_option', default='o', choices=['o', 't', 's'],
                         type=str, help="o: temporal 'o'rdering\n "
@@ -735,7 +893,7 @@ def parse_args():
     parser.add_argument('--backbone_name', default='cnn_3D', type=str,
                         help="implemented models: cnn_3D, cnn_2D, resnet50_2D, resnet18_2D, resnet18_3D")
 
-    parser.add_argument('--run_mode', default='train', choices=['train', 'eval'], help="select mode")  # required=True,
+    parser.add_argument('--run_mode', default='train', choices=['train', 'eval', 'savefeature'], help="select mode")  # required=True,
     parser.add_argument('--pretrained_weight', default=False, action='store_true')
 
     parser.add_argument('--inter_num_ch', default=16, type=int, help='Number of output channels from CNN')
@@ -744,6 +902,13 @@ def parse_args():
     parser.add_argument('--lrscheduler', default=None, type=float, nargs=2, help='StepLR. Input: step_size gamma')
     parser.add_argument('--gradcam', default=False, action='store_true')
     parser.add_argument('--path_pretrained_model', default=None, type=str, help='Input pth path. Continue training from the model')
+
+    ### SimpleMLP
+    parser.add_argument('--mlp_input_size', type=int)
+    parser.add_argument('--mlp_hidden_size_list', nargs='*', type=int)
+
+    parser.add_argument('--dataloader_type', default=None, choices=[None, 'FEATURES', 'PSA', 'PSAo', 'feature38'])
+    parser.add_argument('--only_pos', default=False, action='store_true', help='Get only positive pairs')
 
     args = parser.parse_args()
 
@@ -780,7 +945,8 @@ def run_setup(args):
     os.makedirs(args.output_fullname, exist_ok=True)
 
     # check path
-    assert os.path.exists(args.image_directory), "incorrect image directory path"
+    if args.image_directory is not None:
+        assert os.path.exists(args.image_directory), "incorrect image directory path"
 
     # set up seed
     set_manual_seed(args.seed)
@@ -793,23 +959,34 @@ def run_setup(args):
         print("!! NO GPU AVAILABLE !!")
 
     # string to list
-    image_size = [int(item) for item in args.image_size.split(',')]
-    args.image_size = image_size
-    if len(args.optional_meta) > 0 and ',' in args.optional_meta:
-        optiona_meta_names = [item for item in args.optional_meta.split(',')]
-        args.optional_meta = optiona_meta_names
-    elif len(args.optional_meta) > 0 and not(',' in args.optional_meta):
-        args.optional_meta = [args.optional_meta]
-    else:
-        args.optional_meta = []
+    if args.image_size is not None:
+        image_size = [int(item) for item in args.image_size.split(',')]
+        args.image_size = image_size
+        if len(args.optional_meta) > 0 and ',' in args.optional_meta:
+            optiona_meta_names = [item for item in args.optional_meta.split(',')]
+            args.optional_meta = optiona_meta_names
+        elif len(args.optional_meta) > 0 and not(',' in args.optional_meta):
+            args.optional_meta = [args.optional_meta]
+        else:
+            args.optional_meta = []
 
-    if len(args.image_size) == 2:
-        if args.run_mode == 'train':
-            args.train_loader = loader2D(args, trainvaltest='train')
-            args.val_loader = loader2D(args, trainvaltest='val')
-        if args.run_mode == 'eval':
-            args.test_loader = loader2D(args, trainvaltest='test')
-    elif len(args.image_size) == 3:
+        if len(args.image_size) == 2:
+            if args.run_mode == 'train':
+                args.train_loader = loader2D(args, trainvaltest='train')
+                args.val_loader = loader2D(args, trainvaltest='val')
+            if args.run_mode == 'eval':
+                args.test_loader = loader2D(args, trainvaltest='test')
+        elif len(args.image_size) == 3:
+            if args.run_mode == 'train':
+                args.train_loader = loader3D(args, trainvaltest='train')
+                args.val_loader = loader3D(args, trainvaltest='val')
+            elif args.run_mode == 'eval':
+                args.test_loader = loader3D(args, trainvaltest='test')
+            elif args.run_mode == 'savefeature':
+                args.train_loader = loader3D(args, trainvaltest='train', flag_subject=True)
+                args.val_loader = loader3D(args, trainvaltest='val', flag_subject=True)
+                args.test_loader = loader3D(args, trainvaltest='test', flag_subject=True)
+    elif args.image_size is None:
         if args.run_mode == 'train':
             args.train_loader = loader3D(args, trainvaltest='train')
             args.val_loader = loader3D(args, trainvaltest='val')
@@ -828,7 +1005,7 @@ def run_setup(args):
     print(f'RUN MODE: {args.run_mode}')
     print(f"Num of GPUs: {torch.cuda.device_count()}")
 
-def visualize_gradcam_pair(network, opt, loader, visualization=False):
+def visualize_gradcam_pair(network, opt, visualization=False):
     '''
     https://github.com/heejong-kim/learning-to-compare-longitudinal-images-3d/blob/978e7ae07acf3eb6299b50f3f6b18a5b89b7c3eb/train-aging.py#L1419
     '''
@@ -964,9 +1141,11 @@ def visualize_gradcam_pair(network, opt, loader, visualization=False):
 
         ## gradCAM elementwise (attention map * gradient)
         gradcam_activation_elementwise = (activation * gradient).sum(0)
+        print('gradcam_activation_elementwise:' , gradcam_activation_elementwise.shape)
         gradCAMelement = gradcam_activation_elementwise
         gradCAMelement[gradCAMelement < 0] = 0
         gradCAMelement = resize(gradCAMelement.squeeze()[None,:])
+        print('gradCAMelement: ', gradCAMelement.shape)
 
         # gradCAM avgpool (attention map * avgpool(gradient)) = original gradcam
         pooled_grads = gradient.sum(axis=tuple([1, 2, 3]))
@@ -983,6 +1162,8 @@ def visualize_gradcam_pair(network, opt, loader, visualization=False):
     import cv2
 
     savedmodelname = f"{opt.output_fullname}/model_best.pth"
+    print('savedmodelname: ', savedmodelname)
+
     opt.batchsize = 1
     cuda = True
     #parallel = True
@@ -995,7 +1176,7 @@ def visualize_gradcam_pair(network, opt, loader, visualization=False):
     result_pred = pd.read_csv(os.path.join(f'' + opt.output_fullname, f'{resultname}.csv'))
 
     loader_test = torch.utils.data.DataLoader(
-            loader,
+            opt.test_loader,
             batch_size=opt.batchsize, shuffle=False, num_workers = 1)
     # loader_test = torch.utils.data.DataLoader(
     #         loader(root=opt.image_dir, trainvaltest='test', transform=False, opt=opt),
@@ -1040,7 +1221,7 @@ def visualize_gradcam_pair(network, opt, loader, visualization=False):
             grads = {'activation':[],
                         'gradient':{}}  # an empty dictionary
 
-            if len(args.optional_meta) > 0:
+            if len(opt.optional_meta) > 0:
                 I1, I2 = batch
                 input1, target1, meta1 = I1
                 input2, target2, meta2 = I2
@@ -1053,20 +1234,35 @@ def visualize_gradcam_pair(network, opt, loader, visualization=False):
                 #predicted = network(input2.type(Tensor), input1.type(Tensor))
 
             #############################################################
+            if target1==target2: continue
+            
             input1 = torch.tensor(input1)[None, :]
             input2 = torch.tensor(input2)[None, :]
             # print('input1: ', input1.shape) #torch.Size([1, 1, 80, 80, 80])
             # print('input2: ', input2.shape) #torch.Size([1, 1, 80, 80, 80])
             
-            if args.backbone_name == "resnet18_3D":
+            if opt.backbone_name == "resnet18_3D":
                 feature_tensor1 = network.module.backbone.conv1(input1.type(Tensor).to(device))
+                print('conv1: ', feature_tensor1.shape)
                 feature_tensor1 = network.module.backbone.bn1(feature_tensor1)
+                print('bn1: ', feature_tensor1.shape)
                 feature_tensor1 = network.module.backbone.relu(feature_tensor1)
+                print('relu: ', feature_tensor1.shape)
+
                 feature_tensor1 = network.module.backbone.maxpool(feature_tensor1)
+                print('maxpool: ', feature_tensor1.shape)
+
                 feature_tensor1 = network.module.backbone.layer1(feature_tensor1)
+                print('layer1: ', feature_tensor1.shape)
+
                 feature_tensor1 = network.module.backbone.layer2(feature_tensor1)
+                print('layer2: ', feature_tensor1.shape)
+
                 feature_tensor1 = network.module.backbone.layer3(feature_tensor1)
+                print('layer3: ', feature_tensor1.shape)
+
                 feature_tensor1 = network.module.backbone.layer4(feature_tensor1)
+                print('layer4: ', feature_tensor1.shape)
 
                 feature_tensor2 = network.module.backbone.conv1(input2.type(Tensor).to(device))
                 feature_tensor2 = network.module.backbone.bn1(feature_tensor2)
@@ -1081,41 +1277,44 @@ def visualize_gradcam_pair(network, opt, loader, visualization=False):
                 feature_tensor2 = network.module.backbone.encoder(input2.type(Tensor).to(device))
             #feature_tensor = feature_tensor2 + feature_tensor1
             feature_tensor = feature_tensor2 - feature_tensor1
-            #print('feature_tensor: ', feature_tensor.shape) #torch.Size([1, 16, 5, 5, 5])
+            print('feature_tensor: ', feature_tensor.shape) #torch.Size([1, 16, 5, 5, 5])
 
             activation_diff = feature_tensor.cpu().detach().squeeze().numpy()
-            # activation1 = feature_tensor1.cpu().detach().squeeze().numpy()
-            # activation2 = feature_tensor2.cpu().detach().squeeze().numpy()
-            #print("activation_diff: ", activation_diff.shape) #(16, 5, 5, 5)
+            activation1 = feature_tensor1.cpu().detach().squeeze().numpy()
+            activation2 = feature_tensor2.cpu().detach().squeeze().numpy()
+            print("activation_diff: ", activation_diff.shape) #(16, 5, 5, 5)
+            print("activation1: ", activation1.shape)
 
             handle_tensor = feature_tensor.register_hook(tensor_hook)
-            # handle_tensor1 = feature_tensor1.register_hook(tensor_hook_input1)
-            # handle_tensor2 = feature_tensor2.register_hook(tensor_hook_input2)
+            handle_tensor1 = feature_tensor1.register_hook(tensor_hook_input1)
+            handle_tensor2 = feature_tensor2.register_hook(tensor_hook_input2)
 
             feature_tensor = torch.flatten(feature_tensor, 1)
             predicted = network.module.linear(feature_tensor) 
 
             predicted.backward()
             handle_tensor.remove()
-            # handle_tensor1.remove()
-            # handle_tensor2.remove()
+            handle_tensor1.remove()
+            handle_tensor2.remove()
 
             gradient_diff = grads['gradient']['difference'].squeeze().numpy()
-            # gradient1 = grads['gradient']['activation1'].squeeze().numpy()
-            # gradient2 = grads['gradient']['activation2'].squeeze().numpy()
-            #print("gradient_diff: ", gradient_diff.shape) 
+            gradient1 = grads['gradient']['activation1'].squeeze().numpy()
+            gradient2 = grads['gradient']['activation2'].squeeze().numpy()
+            print("gradient_diff: ", gradient_diff.shape) 
+            print("gradient1: ", gradient1.shape)
 
             im1 = (input1.squeeze().numpy()) # 3d
             im2 = (input2.squeeze().numpy())
             AM_diff, gradCAMelement_diff, gradCAM_diff = get_all_maps(activation_diff, gradient_diff)
-            # AM1, gradCAMelement1, gradCAM1 = get_all_maps(activation1, gradient1)
-            # AM2, gradCAMelement2, gradCAM2 = get_all_maps(activation2, gradient2)
+            AM1, gradCAMelement1, gradCAM1 = get_all_maps(activation1, gradient1)
+            AM2, gradCAMelement2, gradCAM2 = get_all_maps(activation2, gradient2)
             #print('gradCAMelement_diff: ', gradCAMelement_diff.shape) #(80, 80, 80)
 
             label = f'{subject_name}_t1_{int(target1)}_t2_{int(target2)}_pred_{predicted.cpu().detach().item():.2f}'
-            np.save(os.path.join(dir_arr, label+'.npy'), gradCAMelement_diff)
-            # np.save(os.path.join(dir_actgrad, subject_name+'_actdif.npy'), activation_diff)
-            # np.save(os.path.join(dir_actgrad, subject_name+'_graddif.npy'), gradient_diff)
+            np.save(os.path.join(dir_arr, label+'_elementdiff'+'.npy'), gradCAMelement_diff)
+            np.save(os.path.join(dir_arr, label+'_elementf1'+'.npy'), gradCAMelement1)
+            np.save(os.path.join(dir_arr, label+'_elementf2'+'.npy'), gradCAMelement2)
+
             
             if visualization:
 
@@ -1175,8 +1374,12 @@ if __name__ == "__main__":
         print(' ----------------- Testing initiated -----------------')
         test(model, args)
 
-    else:
-        assert args.run_mode == 'train', "check run_mode"
+    elif args.run_mode == 'train':
+        #assert args.run_mode == 'train', "check run_mode"
         print(' ----------------- Training initiated -----------------')
         train(model, args)
+    
+    elif args.run_mode == 'savefeature':
+        print(' ----------------- savefeature initiated -----------------')
+        savefeature(model, args)
 

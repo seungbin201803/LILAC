@@ -1,0 +1,57 @@
+/var/spool/slurm/slurmd/job832919/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torchio/data/image.py:253: UserWarning: Using TorchIO images without a torchio.SubjectsLoader in PyTorch >= 2.3 might have unexpected consequences, e.g., the collated batches will be instances of torchio.Subject with 5D images. Replace your PyTorch DataLoader with a torchio.SubjectsLoader so that the collated batch becomes a dictionary, as expected. See https://github.com/TorchIO-project/torchio/issues/1179 for more context about this issue.
+  warnings.warn(message, stacklevel=1)
+ ----------------- Run Setup Summary -----------------
+JOB NAME: maskchannel_easy_1
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: resnet18_3D
+RUN MODE: train
+Num of GPUs: 1
+Num of Model Parameter: 33205504
+ ----------------- Training initiated -----------------
+lr_scheduler.StepLR is set:  [20.0, 0.5]
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1387, in <module>
+    train(model, args)
+    ~~~~~^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 167, in train
+    predicted = network(input2.type(Tensor), input1.type(Tensor))
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/parallel/data_parallel.py", line 192, in forward
+    return self.module(*inputs[0], **module_kwargs[0])
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/midtier/sablab/scratch/sep4013/LILAC/model.py", line 390, in forward
+    f1 = self.backbone(x1)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/midtier/sablab/scratch/sep4013/LILAC/model.py", line 220, in forward
+    out = self.conv1(x)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/conv.py", line 725, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/conv.py", line 720, in _conv_forward
+    return F.conv3d(
+           ~~~~~~~~^
+        input, weight, bias, self.stride, self.padding, self.dilation, self.groups
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+RuntimeError: Given groups=1, weight of size [64, 2, 3, 3, 3], expected input[8, 80, 80, 80, 80] to have 2 channels, but got 80 channels instead

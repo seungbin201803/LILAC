@@ -1,0 +1,34 @@
+/var/spool/slurm/slurmd/job818372/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/loss.py:610: UserWarning: Using a target size (torch.Size([8])) that is different to the input size (torch.Size([8, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.mse_loss(input, target, reduction=self.reduction)
+ ----------------- Run Setup Summary -----------------
+JOB NAME: age_feature38_easy_1
+TASK: regression
+Target Attribute: timepoint
+BACKBONE: simplemlp
+RUN MODE: train
+Num of GPUs: 1
+Num of Model Parameter: 64000
+ ----------------- Training initiated -----------------
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1372, in <module>
+    train(model, args)
+    ~~~~~^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 184, in train
+    loss = args.loss(predicted, targetdiff)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/loss.py", line 610, in forward
+    return F.mse_loss(input, target, reduction=self.reduction)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/functional.py", line 3905, in mse_loss
+    return torch._C._nn.mse_loss(
+           ~~~~~~~~~~~~~~~~~~~~~^
+        expanded_input, expanded_target, _Reduction.get_enum(reduction)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!

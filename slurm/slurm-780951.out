@@ -1,0 +1,19 @@
+/var/spool/slurm/slurmd/job780951/slurm_script: line 20: ./venv/bin/activate: No such file or directory
+ ----------------- Run Setup Summary -----------------
+JOB NAME: LOADER_PSA_psa_3
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: cnn_3D
+RUN MODE: eval
+Num of GPUs: 1
+Num of Model Parameter: 99584
+ ----------------- Testing initiated -----------------
+RUN TEST
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1213, in <module>
+    test(model, args)
+    ~~~~^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 610, in test
+    loader_test.dataset.demo['subject'].iloc[loader_test.dataset.index_combination[:, 0]])
+                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+TypeError: list indices must be integers or slices, not tuple

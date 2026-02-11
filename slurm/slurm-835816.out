@@ -1,0 +1,35 @@
+/var/spool/slurm/slurmd/job835816/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+ ----------------- Run Setup Summary -----------------
+JOB NAME: lilac_rt_order_50
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: resnet18_3D
+RUN MODE: eval
+Num of GPUs: 1
+Num of Model Parameter: 33203776
+ ----------------- Testing initiated -----------------
+RUN TEST
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1375, in <module>
+    test(model, args)
+    ~~~~^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 626, in test
+    for teststep, batch in enumerate(loader_test):
+                           ~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/utils/data/dataloader.py", line 733, in __next__
+    data = self._next_data()
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/utils/data/dataloader.py", line 789, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/loader.py", line 343, in __getitem__
+    image1 = tio.ScalarImage(tensor=torch.from_numpy(image1), affine=np.eye(4))
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torchio/data/image.py", line 890, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torchio/data/image.py", line 163, in __init__
+    tensor = self._parse_tensor(tensor)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torchio/data/image.py", line 530, in _parse_tensor
+    raise ValueError(f'Input tensor must be 4D, but it is {ndim}D')
+ValueError: Input tensor must be 4D, but it is 3D

@@ -1,0 +1,22 @@
+/var/spool/slurm/slurmd/job785707/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+ ----------------- Run Setup Summary -----------------
+JOB NAME: LOADER_PSAo_6
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: resnet18_3D_psao
+RUN MODE: eval
+Num of GPUs: 1
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run_PSAo.py", line 1259, in <module>
+    model = LILAC_PSAo(args)
+  File "/midtier/sablab/scratch/sep4013/LILAC/model.py", line 402, in __init__
+    self.backbone, self.linear, self.linear2 = get_backbone(args)
+                                               ~~~~~~~~~~~~^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/model.py", line 364, in get_backbone
+    linear2 = backbone.linear2
+              ^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1940, in __getattr__
+    raise AttributeError(
+        f"'{type(self).__name__}' object has no attribute '{name}'"
+    )
+AttributeError: 'ResNet183D' object has no attribute 'linear2'. Did you mean: 'linear'?

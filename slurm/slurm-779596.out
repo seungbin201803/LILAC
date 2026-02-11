@@ -1,0 +1,8 @@
+/var/spool/slurm/slurmd/job779596/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 4, in <module>
+    from loader import *
+  File "/midtier/sablab/scratch/sep4013/LILAC/loader.py", line 185
+    fname1 = os.path.join(self.imgdir, str(row['subject']().zfill(5), row['fname_1'])
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?

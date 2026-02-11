@@ -1,0 +1,35 @@
+/var/spool/slurm/slurmd/job818393/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1360, in <module>
+    run_setup(args)
+    ~~~~~~~~~^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 983, in run_setup
+    args.train_loader = loader3D(args, trainvaltest='train')
+                        ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/loader.py", line 111, in __init__
+    self.demo = pd.read_csv(args.csv_file_train, index_col=0)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        f,
+        ^^
+    ...<6 lines>...
+        storage_options=self.options.get("storage_options", None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+        handle,
+    ...<3 lines>...
+        newline="",
+    )
+FileNotFoundError: [Errno 2] No such file or directory: './RT_age_allpair_train.csv'

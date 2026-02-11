@@ -1,0 +1,12 @@
+/var/spool/slurm/slurmd/job820325/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1367, in <module>
+    run_setup(args)
+    ~~~~~~~~~^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 980, in run_setup
+    args.train_loader = loader3D(args, trainvaltest='train')
+                        ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/loader.py", line 238, in __init__
+    if args.only_pose:
+       ^^^^^^^^^^^^^^
+AttributeError: 'Namespace' object has no attribute 'only_pose'. Did you mean: 'only_pos'?

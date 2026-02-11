@@ -182,10 +182,10 @@ class ResNet183D(nn.Module):
     '''
     https://www.geeksforgeeks.org/deep-learning/resnet18-from-scratch-using-pytorch/
     '''
-    def __init__(self, inputsize):
+    def __init__(self, inputsize, inputch=1):
         super(ResNet183D, self).__init__()
         self.in_channels = 64
-        self.conv1 = nn.Conv3d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv3d(inputch, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm3d(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
@@ -204,6 +204,9 @@ class ResNet183D(nn.Module):
 
         # self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         # self.linear = nn.Linear(512, 1, bias=False)
+
+        #self.linear2 = nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()), 1, bias=False)
+
 
     def _make_layer(self, block, out_channels, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
@@ -233,6 +236,105 @@ class ResNet183D(nn.Module):
         # out = self.fc(out)
         # return out
 
+class ResNet183Dfc3(nn.Module):
+    '''
+    https://www.geeksforgeeks.org/deep-learning/resnet18-from-scratch-using-pytorch/
+    '''
+    def __init__(self, inputsize):
+        super(ResNet183Dfc3, self).__init__()
+        self.in_channels = 64
+        self.conv1 = nn.Conv3d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm3d(64)
+        self.relu = nn.ReLU(inplace=True)
+        self.maxpool = nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
+        
+        self.layer1 = self._make_layer(ResNet3DBasicBlock, 64, 2, stride=1)
+        self.layer2 = self._make_layer(ResNet3DBasicBlock, 128, 2, stride=2)
+        self.layer3 = self._make_layer(ResNet3DBasicBlock, 256, 2, stride=2)
+        self.layer4 = self._make_layer(ResNet3DBasicBlock, 512, 2, stride=2)
+        
+        self.feature_image = (torch.tensor(inputsize) / 16)
+        self.feature_channel = 512
+        self.linear = nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()), 1, bias=False)
+        # self.feature_image = (torch.tensor(inputsize) / (2**(n_of_blocks)))
+        # self.feature_channel = initial_channel
+        #self.linear = nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()) + additional_feature, 1, bias=False)
+
+        # self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        # self.linear = nn.Linear(512, 1, bias=False)
+
+        self.linear2 = nn.ModuleList()
+        self.linear2.append(nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()), 100, bias=False))
+        self.linear2.append(nn.LeakyReLU(0.2, inplace=True)) 
+        self.linear2.append(nn.Linear(100, 50, bias=False))
+        self.linear2.append(nn.LeakyReLU(0.2, inplace=True)) 
+        self.linear2.append(nn.Linear(50, 1, bias=False))
+
+
+    def _make_layer(self, block, out_channels, num_blocks, stride):
+        strides = [stride] + [1] * (num_blocks - 1)
+        layers = []
+        for stride in strides:
+            layers.append(block(self.in_channels, out_channels, stride))
+            self.in_channels = out_channels
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+        out = self.maxpool(out)
+        
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
+
+        out = out.view(out.shape[0], (self.feature_channel * (self.feature_image.prod()).type(torch.int).item()))
+        y = self.linear(out)
+        return y
+        
+        # out = self.avgpool(out)
+        # out = out.view(out.size(0), -1)
+        # out = self.fc(out)
+        # return out
+
+class SimpleMLP(nn.Module):
+    def __init__(self, input_size, hidden_size_list):
+        super(SimpleMLP, self).__init__()
+
+        # self.fc_list = nn.ModuleList()
+        # self.relu_list = nn.ModuleList()
+
+        # self.fc_list.append(self.fc1)
+        # self.relu_list.append(self.relu1)
+
+        if hidden_size_list == [0]:
+            self.layers = None
+            self.linear = nn.Linear(input_size, 1, bias=False)
+        else:
+            self.layers = nn.ModuleList()
+            self.layers.append(nn.Linear(input_size, hidden_size_list[0]) )
+            self.layers.append(nn.LeakyReLU(0.2, inplace=True))
+
+            for i in range(len(hidden_size_list)-1):
+                self.layers.append(nn.Linear(hidden_size_list[i], hidden_size_list[i+1]))
+                self.layers.append(nn.LeakyReLU(0.2, inplace=True))
+                # self.fc_list.append(nn.Linear(hidden_size_list[i], hidden_size_list[i+1])) 
+                # self.relu_list.append(nn.LeakyReLU(0.2, inplace=True))
+                
+            self.linear = nn.Linear(hidden_size_list[-1], 1, bias=False)
+            
+    def forward(self, x):
+        # for fc, relu in zip(self.fc_list, self.relu_list):
+        #     x = fc(x)
+        #     x = relu(x)
+        if self.layers is not None:
+            for l in self.layers:
+                x = l(x)
+        x = self.linear(x)
+        return x
+
 def get_backbone(args=None):
     assert args != None, 'arguments are required for network configurations'
     # TODO args.optional_meta type should be list
@@ -260,7 +362,18 @@ def get_backbone(args=None):
         linear = nn.Linear(512 + n_of_meta, 1, bias=False)
         backbone.fc = nn.Identity()
     elif backbone_name == 'resnet18_3D':
+        backbone = ResNet183D(inputsize=args.image_size, inputch=args.image_channel)
+        linear = backbone.linear
+        backbone.linear = nn.Identity()
+    elif (backbone_name == 'resnet18_3D_psao') or (backbone_name == 'resnet18_3D_psaofc3'):
         backbone = ResNet183D(inputsize=args.image_size)
+        linear = backbone.linear
+        backbone.linear = nn.Identity()
+        linear2 = backbone.linear2
+
+        return backbone, linear, linear2
+    elif backbone_name == 'simplemlp':
+        backbone = SimpleMLP(input_size=args.mlp_input_size, hidden_size_list=args.mlp_hidden_size_list)
         linear = backbone.linear
         backbone.linear = nn.Identity()
     else:
@@ -290,4 +403,30 @@ class LILAC(nn.Module):
                 return self.linear(f), f1, f2
             else:
                 return self.linear(f)
+
+class LILAC_PSAo(nn.Module):
+    def __init__(self, args):
+        super().__init__()
+        self.backbone, self.linear, self.linear2 = get_backbone(args)
+        #self.optional_meta = len(args.optional_meta)>0
+    def forward(self, x1, x2, meta = None, return_f=False):
+        f1 = self.backbone(x1)
+        f2 = self.backbone(x2)
+        f = f1 - f2
+
+        return self.linear(f), self.linear2(f)
+    
+        # if not self.optional_meta:
+        #     if return_f:
+        #         return self.linear(f), f1, f2
+        #     else:
+        #         return self.linear(f)
+        # else:
+        #     m1, m2 = meta
+        #     m = m1 - m2
+        #     f = torch.concat((f, m), 1)
+        #     if return_f:
+        #         return self.linear(f), f1, f2
+        #     else:
+        #         return self.linear(f)
 

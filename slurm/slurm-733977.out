@@ -1,0 +1,30 @@
+/var/spool/slurm/slurmd/job733977/slurm_script: line 19: ./venv/bin/activate: No such file or directory
+/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:552: RuntimeWarning: Mean of empty slice.
+  avg = a.mean(axis, **keepdims_kw)
+/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/numpy/_core/_methods.py:145: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+ ----------------- Run Setup Summary -----------------
+JOB NAME: lilac_rt_order_38
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: resnet18_3D
+RUN MODE: eval
+Num of GPUs: 1
+Num of Model Parameter: 33203776
+ ----------------- Testing initiated -----------------
+result exists: ./output/lilac_rt_order_38-temporal_ordering-backbone_resnet18_3D-lr0.001-seed0-batch8/prediction-testset.csv
+LOSS: 1.705
+warning: AUC calculated only for binary pairs
+AUC: 0.337
+warning: ACC calculated only for binary/positive pairs
+ACC: 0.395
+interval 1.0:                       acc=0.395                       , num=152
+interval from one 1.0:                       acc=nan                       , num=0
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1177, in <module>
+    test(model, args)
+    ~~~~^^^^^^^^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 699, in test
+    visualize_gradcam_pair(network, opt, opt.test_loader, visualization=False)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: visualize_gradcam_pair() got multiple values for argument 'visualization'

@@ -1,0 +1,24 @@
+/var/spool/slurm/slurmd/job780255/slurm_script: line 20: ./venv/bin/activate: No such file or directory
+ ----------------- Run Setup Summary -----------------
+JOB NAME: LOADER_FEATURES_area_prostate_easy
+TASK: temporal_ordering
+Target Attribute: timepoint
+BACKBONE: simplemlp
+RUN MODE: train
+Num of GPUs: 1
+Traceback (most recent call last):
+  File "/midtier/sablab/scratch/sep4013/LILAC/./run.py", line 1208, in <module>
+    model = LILAC(args)
+  File "/midtier/sablab/scratch/sep4013/LILAC/model.py", line 312, in __init__
+    self.backbone, self.linear = get_backbone(args)
+                                 ~~~~~~~~~~~~^^^^^^
+  File "/midtier/sablab/scratch/sep4013/LILAC/model.py", line 301, in get_backbone
+    backbone = SimpleMLP(input_size=args.mlp_input_size, hidden_size_list=args.mlp_hidden_size_list)
+  File "/midtier/sablab/scratch/sep4013/LILAC/model.py", line 254, in __init__
+    self.linear = nn.Linear((self.feature_channel * (self.feature_image.prod()).type(torch.int).item()), 1, bias=False)
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/home/sep4013/.conda/envs/lilac2/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1940, in __getattr__
+    raise AttributeError(
+        f"'{type(self).__name__}' object has no attribute '{name}'"
+    )
+AttributeError: 'SimpleMLP' object has no attribute 'feature_channel'
