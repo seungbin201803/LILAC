@@ -15,7 +15,7 @@ For more information, please read the [PNAS paper](https://www.pnas.org/doi/10.1
 For questions and feedback, please [open issues](https://github.com/heejong-kim/lilac/issues) or email the [corresponding author](https://heejongkim.com).
 
 ## Updates
-- [February 2026] Added updates from ["AI-Based Detection of In-Treatment Changes from Prostate MR-Linac Images"](https://arxiv.org/abs/2602.04983). The study originated from this repository. Refer to `./script-for-mrlinac.sh` to replicate the result.
+- [February 2026] Added updates from MR-Linac study ["AI-Based Detection of In-Treatment Changes from Prostate MR-Linac Images"](https://arxiv.org/abs/2602.04983). The study originated from this repository. Refer to `./script-for-mrlinac.sh` to replicate the result.
     - Added ResNet18-3D.
     - Added learning rate scheduler.
     - Added get_score function.
