@@ -239,7 +239,7 @@ def get_score(opt, resultfilename):
             print(f'ACC: {accuracy_score(target_diff[target_diff == 1], pred_class[target_diff == 1]):.3}')
             #print(f'ACC: {accuracy_score(target_diff[target_diff != 0.5], pred_class[target_diff != 0.5]):.3}')
 
-            ### Accuracy, target interval
+            ### Accuracy, different interval
             class_interval = {}
             class_interval_fromone = {}
             for t1, t2, f in zip(target1, target2, feature_diff):

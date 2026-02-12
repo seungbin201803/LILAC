@@ -34,6 +34,8 @@ setup(
         "tensorboard",
         "torchio >= 0.18.73",
         "scikit-learn",
+        "matplotlib",
+        "opencv-python"
     ],
     license="Apache",
     packages=find_packages(
