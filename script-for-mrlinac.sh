@@ -1,77 +1,74 @@
 #/usr/bin/bash
 
-# Embryo
-## Update image_directory to the path where your images are saved.
-python run.py \
-    --jobname='embryo' \
-    --task_option='o' \
-    --targetname='phaseidx' \
-    --backbone_name='cnn_2D' \
-    --batchsize=64 \
-    --max_epoch=40 \
-    --output_directory='./output' \
-    --image_directory='/scratch/datasets/hk672/embryo/' \
-    --image_size='224,224' \
-    --csv_file_train='./demo_for_release/demo_embryo_train.csv' \
-    --csv_file_val='./demo_for_release/demo_embryo_val.csv' \
-    --csv_file_test='./demo_for_release/demo_embryo_test.csv' \
-    --run_mode='eval' \
-    --pretrained_weight
 
-# Woundhealing
+# f1-fl model - train
 ## Update image_directory to the path where your images are saved.
-python run.py \
-    --jobname='woundhealing' \
+python3 ./run.py \
+    --jobname='f1fl' \
     --task_option='o' \
     --targetname='timepoint' \
-    --backbone_name='cnn_2D' \
-    --batchsize=128 \
-    --max_epoch=40 \
-    --output_directory='./output' \
-    --image_directory='/scratch/datasets/hk672/woundhealing/data_preprocessed' \
-    --image_size='224,224' \
-    --csv_file_train='./demo_for_release/demo_woundhealing_train.csv' \
-    --csv_file_val='./demo_for_release/demo_woundhealing_val.csv' \
-    --csv_file_test='./demo_for_release/demo_woundhealing_test.csv' \
-    --run_mode='eval' \
-    --pretrained_weight
-
-# Aging Brain
-## Update image_directory to the path where your images are saved.
-## Ensure the images have been pre-processed using the Neural Pre-Processing tool.
-python run.py \
-    --jobname='oasis-aging' \
-    --task_option='t' \
-    --targetname='age' \
-    --backbone_name='cnn_3D' \
-    --batchsize=16 \
+    --backbone_name='resnet18_3D' \
+    --batchsize=8 \
     --max_epoch=100 \
     --output_directory='./output' \
-    --image_directory='/share/sablab/nfs04/data/OASIS3/npp-preprocessed/image/' \
-    --image_size='128,128,128' \
-    --csv_file_train='./demo_for_release/demo_oasis-aging_train.csv' \
-    --csv_file_val='./demo_for_release/demo_oasis-aging_val.csv' \
-    --csv_file_test='./demo_for_release/demo_oasis-aging_test.csv' \
-    --run_mode='eval' \
-    --pretrained_weight
+    --image_directory='./image' \
+    --image_size='80,80,80' \
+    --csv_file_train='./demo_for_release/demo_mrlinac-f1fl_train.csv' \
+    --csv_file_val='./demo_for_release/demo_mrlinac-f1fl_val.csv' \
+    --csv_file_test='./demo_for_release/demo_mrlinac-f1fl_test.csv' \
+    --earlystopping=100 \
+    --lrscheduler 20 0.5 \
 
-# MCI Brain
+# f1-fl model - test
 ## Update image_directory to the path where your images are saved.
-## Ensure the images have been pre-processed using the Neural Pre-Processing tool.
-python run.py \
-    --jobname='adni-mci' \
-    --task_option='s' \
-    --targetname='CDRSB' \
-    --optional_meta='AGExSEX'\
-    --backbone_name='cnn_3D' \
-    --batchsize=16 \
-    --max_epoch=40 \
-    --output_directory='./output' \
-    --image_directory='/scratch/datasets/hk672/adni-all-3d-preprocessed/image' \
-    --image_size='128,128,128' \
-    --csv_file_train='./demo_for_release/demo_adni-mci_train.csv' \
-    --csv_file_val='./demo_for_release/demo_adni-mci_val.csv' \
-    --csv_file_test='./demo_for_release/demo_adni-mci_test.csv' \
+python3 ./run.py \
     --run_mode='eval' \
-    --pretrained_weight
+    --jobname='f1fl' \
+    --task_option='o' \
+    --targetname='timepoint' \
+    --backbone_name='resnet18_3D' \
+    --batchsize=8 \
+    --output_directory='./output' \
+    --image_directory='./image' \
+    --image_size='80,80,80' \
+    --csv_file_train='./demo_for_release/demo_mrlinac-f1fl_train.csv' \
+    --csv_file_val='./demo_for_release/demo_mrlinac-f1fl_val.csv' \
+    --csv_file_test='./demo_for_release/demo_mrlinac-f1fl_test.csv' \
+
+# all-pair model - train, starting from the best f1-fl model
+## Update image_directory to the path where your images are saved.
+python3 ./run.py \
+    --jobname='allpair' \
+    --task_option='o' \
+    --targetname='timepoint' \
+    --backbone_name='resnet18_3D' \
+    --batchsize=8 \
+    --max_epoch=100 \
+    --output_directory='./output' \
+    --image_directory='/midtier/sablab/scratch/data/Prostate_RadiologyTreatment/fraction_crop_segmentation' \
+    --image_size='80,80,80' \
+    --csv_file_train='./demo_for_release/demo_mrlinac-allpair_train.csv' \
+    --csv_file_val='./demo_for_release/demo_mrlinac-allpair_val.csv' \
+    --csv_file_test='./demo_for_release/demo_mrlinac-allpair_test.csv' \
+    --earlystopping=100 \
+    --lrscheduler 20 0.5 \
+    --path_pretrained_model='./output/f1fl-temporal_ordering-backbone_resnet18_3D-lr0.001-seed0-batch8/model_best.pth' \
+
+# all-pair model - test + gradcam
+## Update image_directory to the path where your images are saved.
+python3 ./run.py \
+    --run_mode='eval' \
+    --gradcam=True \
+    --jobname='allpair' \
+    --task_option='o' \
+    --targetname='timepoint' \
+    --backbone_name='resnet18_3D' \
+    --batchsize=8 \
+    --max_epoch=100 \
+    --output_directory='./output' \
+    --image_directory='./image' \
+    --image_size='80,80,80' \
+    --csv_file_train='./demo_for_release/demo_mrlinac-allpair_train.csv' \
+    --csv_file_val='./demo_for_release/demo_mrlinac-allpair_val.csv' \
+    --csv_file_test='./demo_for_release/demo_mrlinac-allpair_test.csv' \
 
