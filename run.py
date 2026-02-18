@@ -27,25 +27,24 @@ def minmax(cam):
     cam = cam / (1e-7 + cam_max)
     return cam
 
-
-
-def train(network, opt):
-    cuda = True
+def load_network(opt, network, savedmodelname=None):
     parallel = True
-    device = torch.device(f"cuda:0" if torch.cuda.is_available() else "cpu")
-    Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    os.makedirs(f"{opt.output_fullname}/", exist_ok=True)
     if parallel:
-        network = nn.DataParallel(network).to(device)
+        #network = nn.DataParallel(network).to(device)
+        network = nn.DataParallel(network)
         if opt.pretrained_weight:
             print("Model is using pretrained weights from the paper")
             pretrained_filename = opt.output_fullname.split('/')[-1] + '.pth'
             pretrained_dir = './model_weights'
             pretrained_path = os.path.join(pretrained_dir, pretrained_filename)
-            assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check. \n" \
-                                                    "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
+            print(pretrained_path)
+            assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check.\n" \
+                                                "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
             network.load_state_dict(torch.load(pretrained_path))
+        elif savedmodelname is not None:
+            network.load_state_dict(torch.load(savedmodelname))
     else:
         if opt.pretrained_weight:
             print("Model is using pretrained weights from the paper")
@@ -61,7 +60,27 @@ def train(network, opt):
                 if key.startswith("module."):
                     new_key = key.replace('module.', '')  # Remove 'module.' from the keys
                 new_state_dict[new_key] = state_dict[key]
-        network = network.cuda()
+            
+            # Load the updated state_dict into your model
+            network.load_state_dict(new_state_dict)
+            #network = network.cuda()
+        elif savedmodelname is not None:
+            network.load_state_dict(torch.load(savedmodelname))
+
+    network = network.to(device)
+    return network
+
+def train(network, opt):
+    cuda = True
+    Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
+
+    os.makedirs(f"{opt.output_fullname}/", exist_ok=True)
+
+    if opt.path_pretrained_model is None:
+        network = load_network(opt, network)
+    else:
+        network = load_network(opt, network, opt.path_pretrained_model)
+        print("!!! Continue training from ", opt.path_pretrained_model)
 
     if opt.epoch > 0:
         if len(glob.glob(f"{opt.output_fullname}/epoch{opt.epoch - 1}*.pth")) > 0:
@@ -304,7 +323,7 @@ def get_score(opt, resultfilename):
                 plt.ylabel('Accuracy')
                 plt.xticks(interval_pos)
                 fig.savefig(os.path.join(opt.output_fullname, name+'.jpg'))
-                fig.savefig(os.path.join(opt.output_fullname, name+'.pdf'))
+                #fig.savefig(os.path.join(opt.output_fullname, name+'.pdf'))
                 plt.close()
 
             plot_acc_bar(acc_interval_dict, 'acc_interval')
@@ -348,49 +367,9 @@ def test(network,opt, overwrite = False):
     if run:
         print("RUN TEST")
         cuda = True
-        parallel = True
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
 
-        if parallel:
-            network = nn.DataParallel(network).to(device)
-            if opt.pretrained_weight:
-                print("Model is using pretrained weights from the paper")
-                pretrained_filename = opt.output_fullname.split('/')[-1] + '.pth'
-                pretrained_dir = './model_weights'
-                pretrained_path = os.path.join(pretrained_dir, pretrained_filename)
-                print(pretrained_path)
-                assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check.\n" \
-                                                    "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
-                network.load_state_dict(torch.load(pretrained_path))
-            else:
-                network.load_state_dict(torch.load(savedmodelname))
-
-        else:
-            if opt.pretrained_weight:
-                print("Model is using pretrained weights from the paper")
-                pretrained_filename = opt.output_fullname.split('/')[-1] + '.pth'
-                pretrained_dir = './model_weights'
-                pretrained_path = os.path.join(pretrained_dir, pretrained_filename)
-                assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check.\n" \
-                                                    "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
-                state_dict = torch.load(pretrained_path)
-                # remap to handle w/o DataParallel:  a new state_dict by removing 'module.' prefix
-                new_state_dict = {}
-                for key in state_dict.keys():
-                    if key.startswith("module."):
-                        new_key = key.replace('module.', '')  # Remove 'module.' from the keys
-
-                    new_state_dict[new_key] = state_dict[key]
-
-                # Load the updated state_dict into your model
-                network.load_state_dict(new_state_dict)
-            else:
-                network.load_state_dict(torch.load(savedmodelname))
-
-            if cuda:
-                network = network.cuda()
-
+        network = load_network(opt, network, savedmodelname)
 
         network.eval()
 
@@ -724,47 +703,10 @@ def visualize_gradcam_pair(network, opt, visualization=False):
 
     opt.batchsize = 1
     cuda = True
-    parallel = True
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    if parallel:
-        network = nn.DataParallel(network).to(device)
-        if opt.pretrained_weight:
-            print("Model is using pretrained weights from the paper")
-            pretrained_filename = opt.output_fullname.split('/')[-1] + '.pth'
-            pretrained_dir = './model_weights'
-            pretrained_path = os.path.join(pretrained_dir, pretrained_filename)
-            assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check.\n" \
-                                                "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
-            network.load_state_dict(torch.load(pretrained_path))
-        else:
-            if savedmodelname is not None:
-                network.load_state_dict(torch.load(savedmodelname))
-    else:
-        if opt.pretrained_weight:
-            print("Model is using pretrained weights from the paper")
-            pretrained_filename = opt.output_fullname.split('/')[-1] + '.pth'
-            pretrained_dir = './model_weights'
-            pretrained_path = os.path.join(pretrained_dir, pretrained_filename)
-            assert os.path.exists(pretrained_path), "Pretrained weight does not exist. Please check.\n" \
-                                                "Download: wget https://zenodo.org/records/14713287/files/lilac_model_weights.tar.gz"
-            state_dict = torch.load(pretrained_path)
-            # remap to handle w/o DataParallel:  a new state_dict by removing 'module.' prefix
-            new_state_dict = {}
-            for key in state_dict.keys():
-                if key.startswith("module."):
-                    new_key = key.replace('module.', '')  # Remove 'module.' from the keys
-
-                new_state_dict[new_key] = state_dict[key]
-
-            # Load the updated state_dict into your model
-            network.load_state_dict(new_state_dict)
-        else:
-            network.load_state_dict(torch.load(savedmodelname))
-
-        if cuda:
-            network = network.cuda()
+    network = load_network(opt, network, savedmodelname)
 
     resultname = f'prediction-testset'
     result_pred = pd.read_csv(os.path.join(f'' + opt.output_fullname, f'{resultname}.csv'))
