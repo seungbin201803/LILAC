@@ -155,7 +155,7 @@ If you use this code, please consider citing our work:
 ```
 
 ## LILAC for Prostate MR-Linac Imaging
-LILAC was used for prostate MR-Linac imaging in the paper titled "AI-Based Detection of Temporal Changes in MR‑Linac Images Acquired During Routine Prostate Radiotherapy" (https://arxiv.org/abs/2602.04983).
+LILAC is used for prostate MR-Linac imaging in the paper titled "AI-Based Detection of Temporal Changes in MR‑Linac Images Acquired During Routine Prostate Radiotherapy" (https://arxiv.org/abs/2602.04983).
 
 <img src="overview_mrlinac-github.png" alt="MRLINAC overview" width="800"/>
 
